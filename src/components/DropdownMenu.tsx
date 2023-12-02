@@ -29,7 +29,11 @@ const DropdownMenu = () => {
         </button>
 
         {isOpen && (
-
+            <ul className={css.option}>
+                <button className={css.optionButton}>
+                    Chem
+                </button>
+            </ul>
         )}
     </div>
   );
