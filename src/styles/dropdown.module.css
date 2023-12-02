@@ -1,6 +1,5 @@
 .dropdownToggle {
   background-color: #ffffff;
-  text-align: center;
   cursor: pointer;
   font-size: xx-large;
   width: 50%;
@@ -8,6 +7,17 @@
 
 .innerCssEmoji {
   display: inline-block;
+}
+
+.option {
+  margin-inline-start: -40px;
+}
+
+.optionButton {
+  background-color: white;
+  cursor: pointer;
+  font-size: large;
+  width: 25%;
 }
 
 .innerCssText {

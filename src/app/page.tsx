@@ -29,12 +29,6 @@ export default function Home() {
         </div>
       </div>
 
-      <div>
-        <Link href="/gen">
-            <button>Go to Another Page</button>
-        </Link>
-      </div>
-
       <div className={styles.center}>
         <Image
           className={styles.logo}

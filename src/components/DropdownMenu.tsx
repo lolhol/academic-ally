@@ -8,16 +8,29 @@ const DropdownMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const button = (type: string) => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className={css.dropDownDiv}>
-        <button className={css.dropdownToggle}>
-            <div className={css.innerCss}>
-                🔽
-            </div>
-            <div className={css.innerCss}>
-                Class
-            </div>
+        <button className={css.dropdownToggle} onClick={toggleMenu}>
+            {!isOpen && (
+                <div className={css.innerCssText}>
+                    🔽 Class 🔽
+                </div>
+            )}
+
+            {isOpen && (
+                <div className={css.innerCssText}>
+                    🔼 Class 🔼
+                </div>
+            )}
         </button>
+
+        {isOpen && (
+
+        )}
     </div>
   );
 };
