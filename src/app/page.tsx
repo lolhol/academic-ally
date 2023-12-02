@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from '../../node_modules/next/link'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -26,6 +27,12 @@ export default function Home() {
             />
           </a>
         </div>
+      </div>
+
+      <div>
+        <Link href="/gen">
+            <button>Go to Another Page</button>
+        </Link>
       </div>
 
       <div className={styles.center}>

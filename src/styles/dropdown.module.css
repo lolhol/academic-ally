@@ -1,0 +1,19 @@
+.dropdownToggle {
+  background-color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  font-size: xx-large;
+  width: 50%;
+}
+
+.innerCssEmoji {
+  display: inline-block;
+}
+
+.innerCssText {
+  display: inline-block;
+}
+
+.dropDownDiv {
+  text-align: center;
+}
