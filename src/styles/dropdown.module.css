@@ -1,12 +1,54 @@
 .dropdownToggle {
+  width: 50%;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dropdownToggleButton {
   background-color: #ffffff;
   cursor: pointer;
   font-size: xx-large;
-  width: 50%;
+  width: 70%;
+}
+
+.dropdownToggleButton1 {
+  background-color: #ffffff;
+  cursor: pointer;
+  font-size: xx-large;
+}
+
+.buttonInner {
+  display: inline;
+  margin-left: 10px;
+  width: 30%;
+}
+
+.buttonInnerI {
+  display: inline;
+  width: 30%;
+  margin-left: 10px;
+}
+
+.mainDiv {
+  text-align: center;
+}
+
+.innerInner {
+  display: flex;
+}
+
+.divInner {
+  margin-left: 10px;
+  width: 20%;
 }
 
 .innerCssEmoji {
   display: inline-block;
+}
+
+.innerCssLesson {
+  width: 20%;
 }
 
 .option {
@@ -17,7 +59,13 @@
   background-color: white;
   cursor: pointer;
   font-size: large;
-  width: 25%;
+  width: 100%;
+}
+
+.lessonDropDown {
+  font-size: xx-large;
+  background-color: white;
+  cursor: pointer;
 }
 
 .innerCssText {
@@ -25,5 +73,4 @@
 }
 
 .dropDownDiv {
-  text-align: center;
 }
