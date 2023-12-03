@@ -7,9 +7,10 @@ let isDone = false;
 interface QuizComponentProps {
   prompt: string;
   answers: string[];
+  callback: () => void;
 }
 
-const QuizComponent: React.FC<QuizComponentProps> = ({ prompt, answers }) => {
+const QuizComponent: React.FC<QuizComponentProps> = ({ prompt, answers, callback }) => {
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
 
   useEffect(() => {
@@ -20,7 +21,11 @@ const QuizComponent: React.FC<QuizComponentProps> = ({ prompt, answers }) => {
   const handleDone = (selectedAnswer: string) => {
     if (selectedAnswer === answers[0]) {
       alert("Correct!");
+    } else {
+      alert("Incorect!")
     }
+
+    callback()
   };
 
   const handleClick = (selectedAnswer: string) => {

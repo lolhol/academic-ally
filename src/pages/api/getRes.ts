@@ -8,7 +8,7 @@ import OpenAI from "openai"
 export default async function handler( req: NextApiRequest, res: NextApiResponse) {
     const parsed = JSON.parse(req.body);
     const openai = new OpenAI({
-        apiKey: "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"
+        apiKey: "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"
     });
     let ret = "---";
     if (parsed.textbook == "chemistry"){
@@ -29,6 +29,7 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
             {assistant_id: assistant.id}
         )
         while (true){
+            console.log(1)
             const run_status = await openai.beta.threads.runs.retrieve(
                 thread.id,
                 run.id
@@ -59,6 +60,7 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
             {assistant_id: assistant.id}
         )
         while (true){
+            console.log(1)
             const run_status = await openai.beta.threads.runs.retrieve(
                 thread.id,
                 run.id
@@ -72,7 +74,7 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
             }
         }
     }
-    if (parsed.textbook == "Book Thief"){
+    if (parsed.textbook == "The Book Thief"){
         const assistant = await openai.beta.assistants.create({
             name: "Book Thief Tutor",
             instructions: parsed.instructions,
@@ -89,6 +91,7 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
             {assistant_id: assistant.id}
         )
         while (true){
+            console.log(1)
             const run_status = await openai.beta.threads.runs.retrieve(
                 thread.id,
                 run.id

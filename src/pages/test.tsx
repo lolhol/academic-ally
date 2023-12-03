@@ -7,10 +7,12 @@ import QuizComponent from "@/components/QuizComponent";
 interface TestProps {
   p: string;
   a: string[];
+  callback: () => void;
 }
 
 const Test: React.FC<TestProps> = (props) => {
-  const {p, a} = props;
+  const {p, a, callback} = props;
+  
   return (
     <main>
       <div className={css.box}>
@@ -21,8 +23,9 @@ const Test: React.FC<TestProps> = (props) => {
             a[1],
             a[2],
             a[3],
-          ]}
-        />
+          ]} callback={function (): void {
+            callback()
+          } }        />
       </div>
     </main>
   );
