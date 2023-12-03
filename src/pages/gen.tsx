@@ -1,28 +1,40 @@
 import DropdownMenu from "../components/DropdownMenu";
-import Image from "next/image";
-import Link from "../../node_modules/next/link";
 
 import css from "../styles/genStyle.module.css";
 
 export default function Gen() {
+<<<<<<< Updated upstream
   return (
     <main>
-      <Link href={""}>
-        <div>
-          <Image
-            className={css.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          ></Image>
-        </div>
-      </Link>
-
-      <div className={css.selectClass}>
+      <div>
         <DropdownMenu />
+      </div>
+
+      <div className={css.genButton}>
+        <button>GENERATE</button>
       </div>
     </main>
   );
 }
+=======
+    return (
+        <main>
+            <div>
+                <DropdownMenu />
+            </div>
+
+            <button onClick={() => {handleExecute();}}>pressme</button>
+        </main>
+    )
+}
+
+const handleExecute = async () => {
+    console.log("!!!!")
+    const responseFromCall = await fetch("../api/getRes", {
+      method: "POST",
+      body: "geometry",
+    });
+  
+    const jsonResponce = await responseFromCall.json();
+  };
+>>>>>>> Stashed changes
