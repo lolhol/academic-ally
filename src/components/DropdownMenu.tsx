@@ -90,6 +90,10 @@ const DropdownMenu: React.FC<DropDownMenuProps> = (props) => {
                     name={"AP World History"}
                     onClick={handleButtonClick}
                   />
+                  <DropdownButton
+                    name={"The Book Thief"}
+                    onClick={handleButtonClick}
+                  />
                 </>
               )}
             </div>
