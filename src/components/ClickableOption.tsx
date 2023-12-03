@@ -29,7 +29,8 @@ const ClickableOption: React.FC<ClickableOptionProps> = ({ name, onClick }) => {
           : css.buttonComponentColorDEFAULT
       }
       onClick={() => {
-        onClick(true, callback);
+        console.log("SSS");
+        onClick(false, callback);
       }}
     >
       {name}

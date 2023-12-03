@@ -8,7 +8,7 @@ import OpenAI from "openai"
 export default async function handler( req: NextApiRequest, res: NextApiResponse) {
     const parsed = JSON.parse(req.body);
     const openai = new OpenAI({
-        apiKey: "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"
+        apiKey: "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"
     });
     let ret = "---";
     if (parsed.textbook == "chemistry"){

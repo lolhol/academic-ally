@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import DropdownMenu from "../components/DropdownMenu";
+import css from "../styles/genStyle.module.css"
 import Test from "./test";
 
 export default function Gen() {
@@ -111,7 +112,17 @@ export default function Gen() {
               setChapter(buttonName);
             }}
           />
-          <button onClick={() => setGen(true)}>GENERATE</button>
+          <div className={css.genButtonDiv}>
+            <button className={css.genButton} onClick={() => setGen(true)}>GENERATE</button>
+          </div>
+        </div>
+      )}
+
+      {!isDone && isGenerated && (
+        <div className={css.h1Div}>
+          <h1 className={css.h1Loading}>
+            Generating...
+          </h1>
         </div>
       )}
 
@@ -123,6 +134,7 @@ export default function Gen() {
             callback={() => {
               setGen(false);
               setIsDone(false);
+              setIsRan(false);
             }}
           />
         </div>

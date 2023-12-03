@@ -1,7 +1,25 @@
-.genButton {
+.genButtonDiv {
+  width: 100%;
+  padding-top: 12vh;
   text-align: center;
-  padding-top: auto;
-  height: 10cm;
+}
+
+.genButton {
+  height: 5vh;
+  width: 12vh;
+  text-align: center;
+  border-radius: 30px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.h1Loading {
+  text-align: center;
+}
+
+.h1Div {
+  height: 100%;
+  width: 100%;
 }
 
 .logo {
