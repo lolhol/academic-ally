@@ -3,31 +3,71 @@ import { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai"
 
 export default async function handler( req: NextApiRequest, res: NextApiResponse) {
+    const parsed = JSON.parse(req.body);
     const openai = new OpenAI({
-        apiKey: "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"
+        apiKey: "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"
     });
-    if (req.body == "chemistry"){
+    let ret = "---";
+    if (parsed.textbook == "chemistry"){
 
         const assistant = await openai.beta.assistants.create({
             name: "Chemistry Tutor",
-            instructions: "Given this chemistry textbook and a chapter, create a random question with material related to said chapter.",
-            tools: [{ type: "code_interpreter" }],
-            model: "gpt-4-1106-preview"
-        });
-
-    }
-    if (req.body == "geometry"){
-        const assistant = await openai.beta.assistants.create({
-            name: "Math Tutor",
-            instructions: "Given this geometry textbook and a chapter, create a random question with material related to said chapter.",
+            instructions: parsed.instructions,
             tools: [{ type: "code_interpreter" }],
             model: "gpt-4-1106-preview"
         });
         const thread = await openai.beta.threads.create();
         const message = await openai.beta.threads.messages.create(
             thread.id,
-            {role: "user", content: "abla"}
+            {role: "user", content: parsed.prompt}
         )
+        const run = await openai.beta.threads.runs.create(
+            thread.id,
+            {assistant_id: assistant.id}
+        )
+        while (true){
+            const run_status = await openai.beta.threads.runs.retrieve(
+                thread.id,
+                run.id
+            )
+            if (run_status.status == "completed"){
+                const message = await openai.beta.threads.messages.list(
+                    thread.id
+                )
+                ret = message.data[0].content[0].text.value;
+                break;
+            }
+        }
     }
-    res.status(200).json({ sucess: true });
+    if (parsed.textbook == "geometry"){
+        const assistant = await openai.beta.assistants.create({
+            name: "Math Tutor",
+            instructions: parsed.instructions,
+            tools: [{ type: "code_interpreter" }],
+            model: "gpt-4-1106-preview"
+        });
+        const thread = await openai.beta.threads.create();
+        const message = await openai.beta.threads.messages.create(
+            thread.id,
+            {role: "user", content: parsed.prompt}
+        )
+        const run = await openai.beta.threads.runs.create(
+            thread.id,
+            {assistant_id: assistant.id}
+        )
+        while (true){
+            const run_status = await openai.beta.threads.runs.retrieve(
+                thread.id,
+                run.id
+            )
+            if (run_status.status == "completed"){
+                const message = await openai.beta.threads.messages.list(
+                    thread.id
+                )
+                ret = message.data[0].content[0].text.value;
+                break;
+            }
+        }
+    }
+    res.status(200).json({sucess: true, val: ret});
 }
