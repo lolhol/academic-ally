@@ -15,10 +15,6 @@ const ClickableOption: React.FC<ClickableOptionProps> = ({ name, onClick }) => {
     setClicked(state);
   };
 
-  const getClickState = () => {
-    return clicked;
-  };
-
   return (
     <button
       className={
@@ -29,7 +25,6 @@ const ClickableOption: React.FC<ClickableOptionProps> = ({ name, onClick }) => {
           : css.buttonComponentColorDEFAULT
       }
       onClick={() => {
-        console.log("SSS");
         onClick(false, callback);
       }}
     >

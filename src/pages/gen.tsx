@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import DropdownMenu from "../components/DropdownMenu";
-import css from "../styles/genStyle.module.css"
+import css from "../styles/genStyle.module.css";
 import Test from "./test";
 
 export default function Gen() {
@@ -25,8 +25,7 @@ export default function Gen() {
     try {
       const a = JSON.stringify({
         textbook: lessonName,
-        instructions:
-          "You are a multiple choice test creator.",
+        instructions: "You are a multiple choice test creator.",
         prompt:
           "Provide a challenging question from chapter " +
           chapter +
@@ -43,8 +42,7 @@ export default function Gen() {
 
       const b = JSON.stringify({
         textbook: lessonName,
-        instructions:
-          "You are a multiple choice test creator.",
+        instructions: "You are a multiple choice test creator.",
         prompt:
           "There are 4 people providing answers to the following question in the context of a multiple choise quiz:" +
           jsonQuestion.val +
@@ -62,18 +60,15 @@ export default function Gen() {
 
       console.log(jsonCorrectAnswer.val);
 
-      
-
       for (let i = 0; i < 3; i++) {
         const c = JSON.stringify({
           textbook: lessonName,
-          instructions:
-            "You are a multiple choice test creator.",
+          instructions: "You are a multiple choice test creator.",
           prompt:
             "There are 4 people providing answers to the following question in the context of a multiple choise quiz:" +
             jsonQuestion.val +
             " You are responsible for providing one of the incorrect answers to this question. Only provide the raw answer with nothing else. These are the current answers:" +
-            (answerchoices),
+            answerchoices,
         });
 
         const incorrectAnswerResponse = await fetch("./api/getRes", {
@@ -98,7 +93,7 @@ export default function Gen() {
     if (isGenerated) {
       handleExecute(lessonName, chapter);
     }
-  }, [isGenerated]); // Trigger handleExecute when isGenerated changes
+  }, [isGenerated]);
 
   return (
     <main>
@@ -113,16 +108,16 @@ export default function Gen() {
             }}
           />
           <div className={css.genButtonDiv}>
-            <button className={css.genButton} onClick={() => setGen(true)}>GENERATE</button>
+            <button className={css.genButton} onClick={() => setGen(true)}>
+              GENERATE
+            </button>
           </div>
         </div>
       )}
 
       {!isDone && isGenerated && (
         <div className={css.h1Div}>
-          <h1 className={css.h1Loading}>
-            Generating...
-          </h1>
+          <h1 className={css.h1Loading}>Generating...</h1>
         </div>
       )}
 

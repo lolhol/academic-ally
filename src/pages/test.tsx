@@ -11,24 +11,19 @@ interface TestProps {
 }
 
 const Test: React.FC<TestProps> = (props) => {
-  const {p, a, callback} = props;
-  
+  const { p, a, callback } = props;
+
   return (
     <main>
       <div className={css.box}>
         <QuizComponent
           prompt={p}
-          answers={[
-            a[0],
-            a[1],
-            a[2],
-            a[3],
-          ]} callback1={function (): void {
-            callback()
-          } }        />
+          answers={[a[0], a[1], a[2], a[3]]}
+          callback={callback}
+        />
       </div>
     </main>
   );
-}
+};
 
 export default Test;
