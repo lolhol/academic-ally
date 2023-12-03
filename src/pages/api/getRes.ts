@@ -3,6 +3,8 @@ import * as fs from 'fs'
 import { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai"
 
+// e
+
 export default async function handler( req: NextApiRequest, res: NextApiResponse) {
     const parsed = JSON.parse(req.body);
     const openai = new OpenAI({

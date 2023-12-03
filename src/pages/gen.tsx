@@ -1,37 +1,33 @@
+import { useState } from "react";
 import DropdownMenu from "../components/DropdownMenu";
 
 import css from "../styles/genStyle.module.css";
 
 export default function Gen() {
+  const [lessonName, setLessonName] = useState("NONE");
+
+  const [chapter, setChapter] = useState("NONE");
+
   return (
     <main>
       <div>
-        <DropdownMenu />
+        <DropdownMenu propsClass={function (buttonName: string): void {
+          setLessonName(buttonName);
+        } } propsLesson={function (buttonName: string): void {
+          setChapter(buttonName)
+          console.log(chapter);
+        } } />
       </div>
 
       <div className={css.genButton}>
-        <button onClick={() => {handleExecute();}}>GENERATE</button>
+        
       </div>
     </main>
   );
 }
-function shuffle(array){
-  let currentIndex = array.length,  randomIndex;
 
-  // While there remain elements to shuffle.
-  while (currentIndex > 0) {
+//<button onClick={() => {handleExecute();}}>GENERATE</button>
 
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-  }
-
-  return array;
-}
 const handleExecute = async () => {
     let a = JSON.stringify({
       textbook: "Book Thief",
@@ -81,6 +77,6 @@ const handleExecute = async () => {
       answerchoices.push(jsonIncorrectAnswer.val);
       console.log(jsonIncorrectAnswer.val);
     }
-    shuffle(answerchoices);
+
     console.log(answerchoices);
   };
