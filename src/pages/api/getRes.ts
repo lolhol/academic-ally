@@ -6,7 +6,7 @@ import OpenAI from "openai"
 export default async function handler( req: NextApiRequest, res: NextApiResponse) {
     const parsed = JSON.parse(req.body);
     const openai = new OpenAI({
-        apiKey: "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"
+        apiKey: "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"
     });
     let ret = "---";
     if (parsed.textbook == "chemistry"){
@@ -74,7 +74,7 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
         const assistant = await openai.beta.assistants.create({
             name: "Book Thief Tutor",
             instructions: parsed.instructions,
-            tools: [{ type: "code_interpreter" }],
+            tools: [{ type: "code_interpreter"}],
             model: "gpt-4-1106-preview",
         });
         const thread = await openai.beta.threads.create();

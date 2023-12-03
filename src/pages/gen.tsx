@@ -15,28 +15,12 @@ export default function Gen() {
     </main>
   );
 }
-function shuffle(array){
-  let currentIndex = array.length,  randomIndex;
 
-  // While there remain elements to shuffle.
-  while (currentIndex > 0) {
-
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-  }
-
-  return array;
-}
 const handleExecute = async () => {
     let a = JSON.stringify({
       textbook: "Book Thief",
-      instructions: "given the textbook generate a random problem based on the question. Only include the question",
-      prompt: "write a multiple choice problem on chapter 6 in the Book Thief. Do not provide answer choices, however, or A B C and D. Just provide the question."
+      instructions: "You are a multiple choise test creator.",
+      prompt: "Provide a challenging question from chapter 6 of The Book Theif, do not provide any anwers just simply the question. Only provide the raw question with nothing else."
     });
 
     const question = await fetch("./api/getRes", {
@@ -50,8 +34,8 @@ const handleExecute = async () => {
 
     let b = JSON.stringify({
       textbook: "Book Thief",
-      instructions: "only include the answer to the question in your response. Do not include anything else",
-      prompt: "generate the correct answer to the question " + jsonQuestion.val,
+      instructions: "You are a multiple choise test creator.",
+      prompt: "There are 4 people providing answers to the following question in the context of a multiple choise quiz:" + jsonQuestion.val +" You are responsible for providing the correct answer to this question. Only provide the raw answer with nothing else.",
     })
 
     const correctanswer = await fetch("./api/getRes", {
@@ -68,8 +52,8 @@ const handleExecute = async () => {
     for (let i = 0; i < 3; i++){
       let c = JSON.stringify({
         textbook: "Book Thief",
-        instructions: "only include the answer to the question in your response. Do not include anything else",
-        prompt: "generate an incorrect but reasonable answer to the question " + jsonQuestion.val,
+        instructions: "You are a multiple choise test creator.",
+        prompt: "There are 4 people providing answers to the following question in the context of a multiple choise quiz:" + jsonQuestion.val +" You are responsible for providing one of the incorrect answers to this question. Only provide the raw answer with nothing else.",
       })
   
       const Incorrectanswer = await fetch("./api/getRes", {
@@ -81,6 +65,6 @@ const handleExecute = async () => {
       answerchoices.push(jsonIncorrectAnswer.val);
       console.log(jsonIncorrectAnswer.val);
     }
-    shuffle(answerchoices);
+    
     console.log(answerchoices);
   };
