@@ -8,7 +8,7 @@ import OpenAI from "openai"
 export default async function handler( req: NextApiRequest, res: NextApiResponse) {
     const parsed = JSON.parse(req.body);
     const openai = new OpenAI({
-        apiKey: "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"
+        apiKey: "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"
     });
     let ret = "---";
     if (parsed.textbook == "chemistry"){
@@ -29,7 +29,6 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
             {assistant_id: assistant.id}
         )
         while (true){
-            console.log(1)
             const run_status = await openai.beta.threads.runs.retrieve(
                 thread.id,
                 run.id
@@ -60,7 +59,6 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
             {assistant_id: assistant.id}
         )
         while (true){
-            console.log(1)
             const run_status = await openai.beta.threads.runs.retrieve(
                 thread.id,
                 run.id
@@ -91,7 +89,6 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
             {assistant_id: assistant.id}
         )
         while (true){
-            console.log(1)
             const run_status = await openai.beta.threads.runs.retrieve(
                 thread.id,
                 run.id

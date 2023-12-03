@@ -9,10 +9,17 @@ export default function Gen() {
   const [question, setQ] = useState("NONE");
   const [answers, setA] = useState<string[]>([]);
   const [isDone, setIsDone] = useState(false); // Manage isDone as a state
+  const [isRan, setIsRan] = useState(false);
 
   const handleExecute = async (lessonName: string, chapter: string) => {
     console.log(lessonName);
     console.log(chapter);
+
+    if (isRan) {
+      return;
+    }
+
+    setIsRan(true);
 
     try {
       const a = JSON.stringify({
@@ -54,6 +61,8 @@ export default function Gen() {
 
       console.log(jsonCorrectAnswer.val);
 
+      
+
       for (let i = 0; i < 3; i++) {
         const c = JSON.stringify({
           textbook: lessonName,
@@ -62,7 +71,8 @@ export default function Gen() {
           prompt:
             "There are 4 people providing answers to the following question in the context of a multiple choise quiz:" +
             jsonQuestion.val +
-            " You are responsible for providing one of the incorrect answers to this question. Only provide the raw answer with nothing else.",
+            " You are responsible for providing one of the incorrect answers to this question. Only provide the raw answer with nothing else. These are the current answers:" +
+            (answerchoices),
         });
 
         const incorrectAnswerResponse = await fetch("./api/getRes", {
