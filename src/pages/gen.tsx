@@ -1,17 +1,45 @@
+import { useState } from "react";
 import DropdownMenu from "../components/DropdownMenu";
 
 import css from "../styles/genStyle.module.css";
 
+let prompt: string;
+let results: string[];
+
 export default function Gen() {
+  const [isGenerated, setGen] = useState(false);
+
+  const [lessonName, setLessonName] = useState("NONE");
+
+  const [chapter, setChapter] = useState("NONE");
+
   return (
     <main>
-      <div>
-        <DropdownMenu />
-      </div>
+      {!isGenerated && (
+        <>
+          <div>
+              <DropdownMenu propsClass={function (buttonName: string): void {
+                setLessonName(buttonName);
+              } } propsLesson={function (buttonName: string): void {
+                setChapter(buttonName);
+                console.log(chapter);
+              } } />
 
-      <div className={css.genButton}>
-        <button onClick={() => {handleExecute();}}>GENERATE</button>
-      </div>
+              <button onClick={() => { 
+                setGen(true);
+                handleExecute(lessonName, chapter); 
+              } }>GENERATE</button>
+          </div>
+        </>
+      )}
+
+      {isGenerated && (
+        <>
+          <div>
+            
+          </div>
+        </>
+      )}
     </main>
   );
 }

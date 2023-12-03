@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import css from "../styles/dropdown.module.css";
 import DropdownButton from "./DropdownButton";
 
+interface DropDownMenuProps {
+  propsClass: (buttonName: string) => void;
+  propsLesson: (buttonName: string) => void;
+}
 
-
-const DropdownMenu = () => {
+const DropdownMenu: React.FC<DropDownMenuProps> = (props) => {
+  const { propsClass, propsLesson } = props;
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -15,6 +19,7 @@ const DropdownMenu = () => {
   const handleButtonClick = (buttonName: string) => {
     setName(buttonName);
     setIsOpen(false);
+    propsClass(buttonName);
   };
 
   const [isLessonMenuOpen, setLessonOpen] = useState(false);
@@ -27,6 +32,7 @@ const DropdownMenu = () => {
   const handleLessonButtonClick = (lesson: string) => {
     setLessonSelected(lesson);
     setLessonOpen(false);
+    propsLesson(lesson);
   };
 
   return (
@@ -82,6 +88,10 @@ const DropdownMenu = () => {
                   />
                   <DropdownButton
                     name={"AP World History"}
+                    onClick={handleButtonClick}
+                  />
+                  <DropdownButton
+                    name={"The Book Thief"}
                     onClick={handleButtonClick}
                   />
                 </>

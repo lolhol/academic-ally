@@ -4,20 +4,28 @@ import Link from "../../node_modules/next/link";
 import css from "../styles/genStyle.module.css";
 import QuizComponent from "@/components/QuizComponent";
 
-export default function Test() {
+interface TestProps {
+  p: string;
+  a: string[];
+}
+
+const Test: React.FC<TestProps> = (props) => {
+  const {p, a} = props;
   return (
     <main>
       <div className={css.box}>
         <QuizComponent
-          prompt={"idfnj"}
+          prompt={p}
           answers={[
-            "jndjnfndfjnjijsdnfjdsjfnhdsbfhjdbsjhdbfhjsdbfjbsjbfjbhsdhjfbsdjbdfsjhbfjhdsbjhdfbjsdbfhjsdbiljsdbfhjlksbdklfhskdhoidfiohfgdsjdfsgiougfdhoadgojhgdfsjhsdfg;sdfglkjhsdfgkjlhsdfgklhjfgsdjkhlfdgshkjldfshkjlsdfgklhjdfgskhjldsfgkjlhdfgkhjlsgdfkhjlgfsdkjlhgdfskljsdkjhfdsgkhjldsfgkhjlsdfgjklhsfgdkjlhgdsfkj",
-            "jdnjsjnf",
-            "dnjnfdjnjdnf",
-            "sjdnfjndfn",
+            a[0],
+            a[1],
+            a[2],
+            a[3],
           ]}
         />
       </div>
     </main>
   );
 }
+
+export default Test;
