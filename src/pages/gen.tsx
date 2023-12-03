@@ -22,6 +22,8 @@ export default function Gen() {
     if (c >= 1) {
       return;
     }
+
+    c++
   
     console.log(lessonName)
     console.log(chapter)
