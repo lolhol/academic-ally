@@ -3,7 +3,6 @@ import DropdownMenu from "../components/DropdownMenu";
 import css from "../styles/genStyle.module.css";
 
 export default function Gen() {
-<<<<<<< Updated upstream
   return (
     <main>
       <div>
@@ -16,17 +15,6 @@ export default function Gen() {
     </main>
   );
 }
-=======
-    return (
-        <main>
-            <div>
-                <DropdownMenu />
-            </div>
-
-            <button onClick={() => {handleExecute();}}>pressme</button>
-        </main>
-    )
-}
 
 const handleExecute = async () => {
     console.log("!!!!")
@@ -37,4 +25,3 @@ const handleExecute = async () => {
   
     const jsonResponce = await responseFromCall.json();
   };
->>>>>>> Stashed changes
