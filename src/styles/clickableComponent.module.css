@@ -1,12 +1,19 @@
-.buttonComponentSame {
+.buttonComponentRED {
   height: 30px;
   width: 30px;
   border-radius: 50%;
+  background-color: red;
 }
 
-.buttonComponentColorChange {
+.buttonComponentColorGREEN {
   height: 30px;
   width: 30px;
   border-radius: 50%;
   background-color: green;
+}
+
+.buttonComponentColorDEFAULT {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
 }

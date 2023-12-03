@@ -6,16 +6,12 @@ interface ClickableOptionProps {
   onClick: (state: boolean, callBack: CallbackFunction) => void;
 }
 
-type CallbackFunction = (state: boolean) => void;
+type CallbackFunction = (state: string) => void;
 
 const ClickableOption: React.FC<ClickableOptionProps> = ({ name, onClick }) => {
-  const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState("NONE");
 
-  const handleClick = () => {
-    setClicked(!clicked);
-  };
-
-  const callback = (state: boolean) => {
+  const callback = (state: string) => {
     setClicked(state);
   };
 
@@ -26,14 +22,14 @@ const ClickableOption: React.FC<ClickableOptionProps> = ({ name, onClick }) => {
   return (
     <button
       className={
-        !clicked ? css.buttonComponentSame : css.buttonComponentColorChange
+        clicked == "RED"
+          ? css.buttonComponentRED
+          : clicked == "GREEN"
+          ? css.buttonComponentColorGREEN
+          : css.buttonComponentColorDEFAULT
       }
       onClick={() => {
-        handleClick();
-
-        setTimeout(() => {
-          onClick(clicked, callback);
-        }, 100);
+        onClick(true, callback);
       }}
     >
       {name}

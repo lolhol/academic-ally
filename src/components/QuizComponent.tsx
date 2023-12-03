@@ -40,8 +40,14 @@ const QuizComponent: React.FC<QuizComponentProps> = ({ prompt, answers, callback
           <div className={css.text}>
             <ClickableOption
               name={String.fromCharCode(97 + index)}
-              onClick={(state: boolean) => {
-                if (!state) handleClick(answer);
+              onClick={(state: boolean, callback) => {
+                if (!state) {
+                  if (answer == answers[0]) {
+                    callback("GREEN");
+                  } else {
+                    callback("RED");
+                  }
+                }
               }}
             />
             {answer}
