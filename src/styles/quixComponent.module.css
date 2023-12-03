@@ -1,0 +1,27 @@
+.prompt {
+  color: black;
+  font-size: large;
+
+  text-align: center;
+}
+
+.main {
+  width: 100%;
+  margin-top: 2vh;
+  position: absolute;
+}
+
+.answer {
+  margin-top: 5vh;
+  max-width: 98%;
+  margin-left: 1vh;
+}
+
+.text {
+  display: inline;
+  word-wrap: break-word;
+}
+
+.answerInternal {
+  margin-top: 1vh;
+}

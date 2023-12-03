@@ -14,3 +14,16 @@
 .selectClass {
   padding-top: 2cm;
 }
+
+.textInBox {
+  text-align: center;
+  font-size: large;
+}
+
+.box {
+  width: 100%;
+  height: 100vh;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
