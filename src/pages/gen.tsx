@@ -17,11 +17,11 @@ export default function Gen() {
 }
 
 const handleExecute = async () => {
-    console.log("!!!!")
-    const responseFromCall = await fetch("../api/getRes", {
-      method: "POST",
-      body: "geometry",
-    });
-  
-    const jsonResponce = await responseFromCall.json();
-  };
+  console.log("!!!!");
+  const responseFromCall = await fetch("../api/getRes", {
+    method: "POST",
+    body: "geometry",
+  });
+
+  const jsonResponce = await responseFromCall.json();
+};
