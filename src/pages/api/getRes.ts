@@ -34,6 +34,7 @@ export default async function handler(
         thread.id,
         run.id
       );
+
       if (run_status.status == "completed") {
         const message = await openai.beta.threads.messages.list(thread.id);
         ret = message.data[0].content[0].text.value;
@@ -95,5 +96,6 @@ export default async function handler(
       }
     }
   }
+
   res.status(200).json({ success: true, val: ret });
 }
