@@ -1,6 +1,9 @@
 import OpenAI from "../../node_modules/openai/index";
+import { MANAGER } from "./AcademicAlly";
 import AITimeoutError from "./err/AITimeoutError";
 import InvalidKeyException from "./err/InvalidKeyException";
+import GPTPrompt from "./GPTPrompt";
+import { parseGPTResponce } from "./util/GPTParseUtil";
 
 export default class Assistant {
   public name: string;
@@ -11,39 +14,70 @@ export default class Assistant {
   private thread: any;
   private curRun: any;
 
-  public constructor(textbookName: string, gptKey: string) {
+  private reqQueue: GPTPrompt[] = [];
+
+  public constructor(
+    textbookName: string,
+    gptKey: string,
+    initInfo: string,
+    chapter: string
+  ) {
     this.name = textbookName;
     this.key = gptKey;
     this.booleanWorking = false;
 
-    this.initAI();
+    this.initAI(initInfo, chapter);
+    this.initQueue();
   }
 
-  private async initAI() {
+  public addToQueue(prompt: string, key: string) {
+    this.reqQueue.push(new GPTPrompt(prompt, key));
+  }
+
+  public async initQueue() {
+    while (true) {
+      if (this.reqQueue.length == 0) continue;
+
+      const curQ = this.reqQueue.shift();
+      if (curQ !== undefined) {
+        try {
+          const result = await this.promptGPT(curQ.prompt);
+          const responseAr = parseGPTResponce(result);
+          const q = responseAr.shift();
+
+          if (q !== undefined) {
+            MANAGER.addResponce(curQ.key, q, responseAr);
+          }
+        } catch (e) {
+          MANAGER.addError(curQ.key);
+        }
+      }
+    }
+  }
+
+  private async initAI(initText: string, chapter: string) {
     const ai = new OpenAI({
       apiKey: this.key,
     });
 
-    // TODO: add a chooser for the textbook and prompt chat GPT with it
-
     try {
       this.ai = await openai.beta.assistants.create({
         name: this.name,
-        instructions: "You are a multiple choice test creator.",
+        instructions:
+          "You are a multiple choice test creator on the chapter " +
+          chapter +
+          ".",
         tools: [{ type: "code_interpreter" }],
         model: "gpt-4-1106-preview",
       });
 
       this.thread = await openai.beta.threads.create();
-
       await openai.beta.threads.messages.create(this.thread.id, {
         role: "user",
         content:
-          "Remember this text and don't use any other source other then this text -> " +
-          "...",
+          "Remember this text and don't use any other source other then this text in any of your next prompts -> " +
+          initText,
       });
-
-      // @here
     } catch (error) {
       throw new InvalidKeyException("Invalid AI key provided.");
     }
