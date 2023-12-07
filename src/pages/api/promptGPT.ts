@@ -10,6 +10,7 @@ export default async function handler(
 ) {
   const parsed = JSON.parse(req.body);
   const token = generateToken(TOKENLEN);
+  console.log("!!!");
   const GPTPromptRes = MANAGER.promptGPT(
     token,
     parsed.prompt,

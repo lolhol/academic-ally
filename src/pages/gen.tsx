@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import DropdownMenu from "../components/DropdownMenu";
 import css from "../styles/genStyle.module.css";
 import Test from "./test";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Gen() {
   const [isGenerated, setGen] = useState(false);
@@ -11,6 +12,12 @@ export default function Gen() {
   const [answers, setA] = useState<string[]>([]);
   const [isDone, setIsDone] = useState(false); // Manage isDone as a state
   const [isRan, setIsRan] = useState(false);
+
+  const [test, setTest] = useState(false);
+
+  const turnOnOffTest = () => {
+    setTest(!test);
+  };
 
   const handleExecute = async (lessonName: string, chapter: string) => {
     console.log(lessonName);
@@ -89,6 +96,55 @@ export default function Gen() {
     }
   };
 
+  const handleTestExec = async (lessonName: string, chapter: string) => {
+    console.log("TESTING!");
+    const a = JSON.stringify({
+      textbook: lessonName,
+      prompt: "You are a multiple choice test creator.",
+      chapter: chapter,
+    });
+
+    const tokenRes = await fetch("./api/promptGPT", {
+      method: "POST",
+      body: a,
+    });
+
+    const tokenJson = await tokenRes.json();
+    if (!tokenJson.success) {
+      console.error("ERR!");
+    } else {
+      const token = tokenJson.token;
+
+      console.log("!!!");
+
+      while (true) {
+        const q = JSON.stringify({
+          token: token,
+        });
+
+        const tokenRes = await fetch("./api/requestUpdate", {
+          method: "POST",
+          body: q,
+        });
+
+        const json = await tokenRes.json();
+
+        if (typeof json.type === "string") {
+          continue;
+        } else if (json.type === "class") {
+          console.log(json.result.question);
+          break;
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (test) {
+      handleTestExec("124", "1234");
+    }
+  }, [test]);
+
   useEffect(() => {
     if (isGenerated) {
       handleExecute(lessonName, chapter);
@@ -97,6 +153,16 @@ export default function Gen() {
 
   return (
     <main>
+      <div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={turnOnOffTest}
+        >
+          Primary
+        </button>
+      </div>
+
       {!isGenerated && (
         <div>
           <DropdownMenu

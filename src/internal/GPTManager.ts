@@ -2,13 +2,18 @@ import { TEXTBOOKCHAPTERS, TEXTBOOKS } from "./AcademicAlly";
 import Assistant from "./Assistant";
 import InvalidKeyException from "./err/InvalidKeyException";
 import Reader from "./Reader";
+import AssistentResponce from "./User/AssistentResponce";
 import AssistentResponceStore from "./User/AssistentResponceStore";
 
 export default class GPTManager {
   private assistantMap: Map<string, Map<string, Assistant>> = new Map();
   private responceStore: AssistentResponceStore = new AssistentResponceStore();
+  private TEXTBOOKS: string[] = ["124", "1111"];
+  private TEXTBOOKCHAPTERS: string[] = ["1234"];
+  private key: string;
 
   constructor() {
+    this.key = new Reader("../../.env").read();
     this.createAssistants();
   }
 
@@ -22,9 +27,9 @@ export default class GPTManager {
 
   public createAssistants() {
     try {
-      for (let i = 0; i < TEXTBOOKS.length; i++) {
-        let textBookName = TEXTBOOKS[i];
-        let curChapterList = TEXTBOOKCHAPTERS[i];
+      for (let i = 0; i < this.TEXTBOOKS.length; i++) {
+        let textBookName = this.TEXTBOOKS[i];
+        let curChapterList = this.TEXTBOOKCHAPTERS[i];
 
         let curChapters: Map<string, Assistant> = new Map();
         for (let j = 0; j < curChapterList.length; j++) {
@@ -41,6 +46,7 @@ export default class GPTManager {
         this.assistantMap.set(textBookName, curChapters);
       }
     } catch (e) {
+      console.log(e);
       console.log("INVALID KEY!");
     }
   }
@@ -64,7 +70,7 @@ export default class GPTManager {
     return false;
   }
 
-  public getUpdate(token: string) {
+  public getUpdate(token: string): string | AssistentResponce {
     return this.responceStore.isResponded(token);
   }
 }
