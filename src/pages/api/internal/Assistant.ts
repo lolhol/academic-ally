@@ -1,4 +1,4 @@
-import OpenAI from "../../node_modules/openai/index";
+import OpenAI from "openai";
 import { MANAGER } from "./AcademicAlly";
 import AITimeoutError from "./err/AITimeoutError";
 import InvalidKeyException from "./err/InvalidKeyException";
@@ -81,7 +81,8 @@ export default class Assistant {
           initText,
       });
     } catch (error) {
-      throw new InvalidKeyException("Invalid AI key provided.");
+      console.log(error);
+      //throw new InvalidKeyException("Invalid AI key provided.");
     }
   }
 

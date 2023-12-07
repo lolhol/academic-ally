@@ -1,4 +1,4 @@
-import { MANAGER } from "@/internal/AcademicAlly";
+import { MANAGER } from "@/pages/api/internal/AcademicAlly";
 import * as fs from "fs";
 
 import { NextApiRequest, NextApiResponse } from "next";

@@ -1,5 +1,5 @@
-import { MANAGER, TOKENLEN } from "@/internal/AcademicAlly";
-import { generateToken } from "@/internal/User/TokenUtils";
+import { MANAGER, TOKENLEN } from "@/pages/api/internal/AcademicAlly";
+import { generateToken } from "@/pages/api/internal/User/TokenUtils";
 import * as fs from "fs";
 
 import { NextApiRequest, NextApiResponse } from "next";
