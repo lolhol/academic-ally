@@ -1,5 +1,7 @@
+import page from "@/app/page";
 import OpenAI from "openai";
 import { MANAGER } from "./AcademicAlly";
+import AIDoesNotExistError from "./err/AIDoesNotExistError";
 import AITimeoutError from "./err/AITimeoutError";
 import InvalidKeyException from "./err/InvalidKeyException";
 import GPTPrompt from "./GPTPrompt";
@@ -14,6 +16,8 @@ export default class Assistant {
   public booleanWorking: boolean;
   private thread: any;
   private curRun: any;
+
+  private openai: OpenAI | undefined;
 
   private reqQueue: GPTPrompt[] = [];
 
@@ -58,12 +62,12 @@ export default class Assistant {
   }
 
   private async initAI(initText: string, chapter: string) {
-    const ai = new OpenAI({
+    this.openai = new OpenAI({
       apiKey: this.key,
     });
 
     try {
-      this.ai = await openai.beta.assistants.create({
+      this.ai = await this.openai.beta.assistants.create({
         name: this.name,
         instructions:
           "You are a multiple choice test creator on the chapter " +
@@ -73,8 +77,8 @@ export default class Assistant {
         model: "gpt-4-1106-preview",
       });
 
-      this.thread = await openai.beta.threads.create();
-      await openai.beta.threads.messages.create(this.thread.id, {
+      this.thread = await this.openai.beta.threads.create();
+      await this.openai.beta.threads.messages.create(this.thread.id, {
         role: "user",
         content:
           "Remember this text and don't use any other source other then this text in any of your next prompts -> " +
@@ -91,35 +95,41 @@ export default class Assistant {
   }
 
   public async promptGPT(prompt: string) {
-    let start = Date.now();
+    if (this.openai !== undefined) {
+      let start = Date.now();
 
-    if (!this.booleanWorking || this.ai === undefined) {
-      return "---";
-    }
-
-    await openai.beta.threads.messages.create(this.thread.id, {
-      role: "user",
-      content: prompt,
-    });
-
-    this.curRun = await openai.beta.threads.runs.create(this.thread.id, {
-      assistant_id: this.ai.id,
-    });
-
-    while (Date.now() - start <= 15000) {
-      const status = await openai.beta.threads.runs.retrieve(
-        this.thread.id,
-        this.curRun.id
-      );
-
-      // The message return system needs to be re-worked to actually work but for now its fine
-      if (status.status == "completed") {
-        const message = await openai.beta.threads.messages.list(this.thread.id);
-        return message.data[0].content[0].text.value;
+      if (!this.booleanWorking || this.ai === undefined) {
+        return "---";
       }
-    }
 
-    throw new AITimeoutError("Timed out!");
-    return "---";
+      await this.openai.beta.threads.messages.create(this.thread.id, {
+        role: "user",
+        content: prompt,
+      });
+
+      this.curRun = await this.openai.beta.threads.runs.create(this.thread.id, {
+        assistant_id: this.ai.id,
+      });
+
+      while (Date.now() - start <= 15000) {
+        const status = await this.openai.beta.threads.runs.retrieve(
+          this.thread.id,
+          this.curRun.id
+        );
+
+        // The message return system needs to be re-worked to actually work but for now its fine
+        if (status.status == "completed") {
+          const message = await this.openai.beta.threads.messages.list(
+            this.thread.id
+          );
+          return message.data[0].content[0].text.value;
+        }
+      }
+
+      throw new AITimeoutError("Timed out!");
+      return "---";
+    } else {
+      throw new AIDoesNotExistError("AI Does not exist! (== undefined)");
+    }
   }
 }
