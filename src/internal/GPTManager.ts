@@ -45,6 +45,8 @@ export default class GPTManager {
 
         this.assistantMap.set(textBookName, curChapters);
       }
+
+      console.log("Done init!");
     } catch (e) {
       console.log(e);
       console.log("INVALID KEY!");

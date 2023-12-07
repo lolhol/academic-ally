@@ -4,6 +4,7 @@ import AITimeoutError from "./err/AITimeoutError";
 import InvalidKeyException from "./err/InvalidKeyException";
 import GPTPrompt from "./GPTPrompt";
 import { parseGPTResponce } from "./util/GPTParseUtil";
+import { delay } from "./util/TimeUtil";
 
 export default class Assistant {
   public name: string;
@@ -36,6 +37,7 @@ export default class Assistant {
 
   public async initQueue() {
     while (true) {
+      await delay(1000);
       if (this.reqQueue.length == 0) continue;
 
       const curQ = this.reqQueue.shift();

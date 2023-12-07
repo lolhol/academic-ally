@@ -8,9 +8,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log("!!!");
   const parsed = JSON.parse(req.body);
   const token = generateToken(TOKENLEN);
-  console.log("!!!");
   const GPTPromptRes = MANAGER.promptGPT(
     token,
     parsed.prompt,
