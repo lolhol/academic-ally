@@ -1,9 +1,9 @@
 import { TEXTBOOKCHAPTERS, TEXTBOOKS } from "./AcademicAlly";
 import Assistant from "./Assistant";
 import InvalidKeyException from "./err/InvalidKeyException";
-import Reader from "./Reader";
 import AssistentResponce from "./User/AssistentResponce";
 import AssistentResponceStore from "./User/AssistentResponceStore";
+import * as fs from "fs";
 
 export default class GPTManager {
   private assistantMap: Map<string, Map<string, Assistant>> = new Map();
@@ -13,7 +13,7 @@ export default class GPTManager {
   private key: string;
 
   constructor() {
-    this.key = new Reader("../../.env").read();
+    this.key = fs.readFileSync("./.env", "utf8");
     this.createAssistants();
   }
 
@@ -35,7 +35,7 @@ export default class GPTManager {
         for (let j = 0; j < curChapterList.length; j++) {
           let assistant = new Assistant(
             textBookName,
-            "KEY",
+            this.key,
             textBookName,
             j.toString()
           );

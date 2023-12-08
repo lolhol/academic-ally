@@ -10,15 +10,13 @@ import { delay } from "./util/TimeUtil";
 
 export default class Assistant {
   public name: string;
-  public key: string;
-  public ai: { id: any } | undefined;
-
   public booleanWorking: boolean;
+
+  private key: string;
+  private ai: { id: any } | undefined;
   private thread: any;
   private curRun: any;
-
   private openai: OpenAI | undefined;
-
   private reqQueue: GPTPrompt[] = [];
 
   public constructor(
@@ -41,8 +39,10 @@ export default class Assistant {
 
   public async initQueue() {
     while (true) {
-      await delay(1000);
-      if (this.reqQueue.length == 0) continue;
+      if (this.reqQueue.length == 0) {
+        await delay(1000);
+        continue;
+      }
 
       const curQ = this.reqQueue.shift();
       if (curQ !== undefined) {
