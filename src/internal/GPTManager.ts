@@ -1,6 +1,5 @@
 import { TEXTBOOKS } from "./AcademicAlly";
 import Assistant from "./Assistant";
-import InvalidKeyException from "./err/InvalidKeyException";
 import AssistentResponce from "./User/AssistentResponce";
 import AssistentResponceStore from "./User/AssistentResponceStore";
 import * as fs from "fs";
@@ -45,7 +44,8 @@ export default class GPTManager {
             textBookName,
             this.key,
             curChapterList[j],
-            j.toString()
+            j.toString(),
+            this
           );
 
           // TODO: "multithreading" (l8tr)

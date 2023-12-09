@@ -1,9 +1,8 @@
 import page from "@/app/page";
 import OpenAI from "openai";
-import { MANAGER } from "./AcademicAlly";
 import AIDoesNotExistError from "./err/AIDoesNotExistError";
 import AITimeoutError from "./err/AITimeoutError";
-import InvalidKeyException from "./err/InvalidKeyException";
+import GPTManager from "./GPTManager";
 import GPTPrompt from "./GPTPrompt";
 import { parseGPTResponce } from "./util/GPTParseUtil";
 import { delay } from "./util/TimeUtil";
@@ -18,13 +17,16 @@ export default class Assistant {
   private curRun: any;
   private openai: OpenAI | undefined;
   private reqQueue: GPTPrompt[] = [];
+  private GPTManager;
 
   public constructor(
     textbookName: string,
     gptKey: string,
     initInfo: string,
-    chapter: string
+    chapter: string,
+    GPTManagerInstance: GPTManager
   ) {
+    this.GPTManager = GPTManagerInstance;
     this.name = textbookName;
     this.key = gptKey;
     this.booleanWorking = false;
@@ -52,10 +54,10 @@ export default class Assistant {
           const q = responseAr.shift();
 
           if (q !== undefined) {
-            MANAGER.addResponce(curQ.key, q, responseAr);
+            this.GPTManager.addResponce(curQ.key, q, responseAr);
           }
         } catch (e) {
-          MANAGER.addError(curQ.key);
+          this.GPTManager.addError(curQ.key);
         }
       }
     }
