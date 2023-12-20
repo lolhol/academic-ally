@@ -1,8 +1,9 @@
 import Assistant from "./Assistant";
-import type AssistentResponce from "./user/AssistentResponce";
+import AssistentResponce from "./user/AssistentResponce";
 import AssistentResponceStore from "./user/AssistentResponceStore";
 import * as fs from "fs";
 import type TextbookManager from "./textbooks/TextbookManager";
+import GetUpdateResponce from "./user/GetUpdateResponce";
 
 export default class GPTManager {
   private assistantMap: Map<string, Map<string, Assistant>> = new Map();
@@ -91,10 +92,13 @@ export default class GPTManager {
     textbook: string,
     chapter: string
   ): boolean {
+    this.responceStore.remove(key);
     this.responceStore.addUserStore(key);
 
-    console.log(textbook);
-    console.log(this.assistantMap);
+    console.log(JSON.stringify(chapter), [
+      ...this.assistantMap.get(textbook)!.keys(),
+    ]);
+    console.log(this.assistantMap.get(textbook)?.has(chapter));
 
     if (
       this.assistantMap.has(textbook) &&
@@ -108,7 +112,24 @@ export default class GPTManager {
     return false;
   }
 
-  public getUpdate(token: string): string | AssistentResponce {
-    return this.responceStore.isResponded(token);
+  public getUpdate(token: string): GetUpdateResponce {
+    let res = this.responceStore.isResponded(token);
+    //console.log(this.responceStore.data);
+    //console.log(res);
+    if (res == "false") {
+      const updateResFalse = new GetUpdateResponce(false, false, null);
+      return updateResFalse;
+    } else if (res == "error") {
+      const updateResErr = new GetUpdateResponce(true, true, null);
+      return updateResErr;
+    }
+
+    if (typeof res != "string") {
+      const updateRes = new GetUpdateResponce(true, false, res);
+      this.responceStore.remove(token);
+      return updateRes;
+    }
+
+    return new GetUpdateResponce(true, true, null);
   }
 }

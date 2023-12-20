@@ -10,7 +10,7 @@ export default class AssistentResponceStore {
       this.cleanUp();
     }
 
-    this.data.set(token, new AssistentResponce("", [], Date.now()));
+    this.data.set(token, new AssistentResponce("WAITING!", [], Date.now()));
   }
 
   public addErr(token: string) {
@@ -45,19 +45,18 @@ export default class AssistentResponceStore {
   }
 
   public isResponded(token: string): string | AssistentResponce {
-    if (this.data.has(token)) {
+    if (this.isUser(token)) {
+      console.log("RETURNED REAL VAL!");
       if (
         this.data.get(token)?.question.includes("CHATGPT_ERROR_ERROR_CHATGPT")
       ) {
         return "error";
-      } else {
+      } else if (!this.data.get(token)?.question.includes("WAITING!")) {
         const cur = this.data.get(token);
         if (cur !== undefined) {
           return cur;
         }
       }
-    } else {
-      return "false";
     }
 
     return "false";

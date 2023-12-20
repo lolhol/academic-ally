@@ -9,41 +9,25 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (MANAGER !== null) {
-    const parsed = JSON.parse(req.body);
-    const token = parsed.token;
+  const parsed = JSON.parse(req.body);
+  const token = parsed.token;
 
-    // not sure dis gon work but EEHHHH
-    const managerRes = MANAGER.getUpdate(token);
-    let a;
+  const managerRes = MANAGER.getUpdate(token);
 
-    if (typeof managerRes === "string") {
-      a = {
-        success: true,
-        type: "string",
-        result: managerRes,
-      };
-    } else {
-      const result = {
-        question: managerRes.question,
-        answers: managerRes.answers,
-      };
-
-      a = {
-        success: true,
-        type: "class",
-        result: result,
-      };
-    }
-
-    res.status(200).json({ success: true, data: a });
+  if (
+    managerRes.isError == true ||
+    managerRes.isResponded == false ||
+    managerRes.response === null
+  ) {
+    res
+      .status(200)
+      .json({ responded: managerRes.isResponded, error: managerRes.isError });
   } else {
-    let a = {
-      success: true,
-      type: "string",
-      result: "ERROR",
-    };
-
-    res.status(200).json({ success: false, data: a });
+    res.status(200).json({
+      responded: managerRes.isResponded,
+      error: managerRes.isError,
+      question: managerRes.response?.question,
+      answers: managerRes.response?.answers,
+    });
   }
 }

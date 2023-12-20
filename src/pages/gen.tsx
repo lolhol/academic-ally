@@ -3,6 +3,8 @@ import DropdownMenu from "../components/DropdownMenu";
 import css from "../styles/genStyle.module.css";
 import Test from "./test";
 import "bootstrap/dist/css/bootstrap.min.css";
+import type PromptGPTRequest from "@/interfaces/PromptGPTRequest";
+import { delay } from "./api/internal/util/TimeUtil";
 
 export default function Gen() {
   const [isGenerated, setGen] = useState(false);
@@ -98,15 +100,15 @@ export default function Gen() {
 
   const handleTestExec = async (lessonName: string, chapter: string) => {
     console.log("TESTING!");
-    const a = JSON.stringify({
-      textbook: "The-Book-Thief",
-      prompt: "Make me 5 questions about this.",
-      chapter: 2,
-    });
 
     const tokenRes = await fetch("./api/promptGPT", {
       method: "POST",
-      body: a,
+      body: JSON.stringify({
+        textbook: "The-Book-Thief",
+        prompt:
+          "Make me a question and 4 possible answers for this. Make the question and answers separated with --- where --- is on a separate line. Remove the A, B, C, D from the answers and instead separate them with --- as well. Do not put an empty line in between question and answers.",
+        chapter: "2",
+      } satisfies PromptGPTRequest),
     });
 
     const tokenJson = await tokenRes.json();
@@ -114,28 +116,40 @@ export default function Gen() {
     if (!tokenJson.success) {
       console.error("ERR!");
     } else {
-      const token = tokenJson.token;
+      const token = tokenJson.token.toString();
 
-      console.log("!!!");
+      const q = JSON.stringify({
+        token: token,
+      });
+
+      let curAmtReqd = 0;
 
       while (true) {
-        const q = JSON.stringify({
-          token: token,
-        });
-
         const tokenRes = await fetch("./api/requestUpdate", {
           method: "POST",
           body: q,
         });
 
+        curAmtReqd++;
+
         const json = await tokenRes.json();
 
-        if (typeof json.type === "string") {
+        if (!json.responded && curAmtReqd < 20) {
+          await delay(1000);
           continue;
-        } else if (json.type === "class") {
-          console.log(json.result.question);
+        }
+
+        console.log(json);
+
+        if (json.error || curAmtReqd >= 20) {
+          console.error("Error when generating!");
           break;
         }
+
+        console.log("Success!");
+        console.log("Question: " + json.question);
+        console.log("Answers: " + json.answers);
+        break;
       }
     }
   };

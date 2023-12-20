@@ -14,7 +14,10 @@ export default class TextbookManager {
     let curChapter = 0;
     for (let i = 0; i < this.books.length; i++) {
       const cur = this.books[i];
-      const allFileContents = fs.readFileSync("./public/" + cur, "utf-8");
+      const allFileContents = fs.readFileSync(
+        "./public/" + cur + ".txt",
+        "utf-8"
+      );
       let chaptersContent: string[] = [];
       //console.log(allFileContents.length + "!!!!!");
 
@@ -34,7 +37,7 @@ export default class TextbookManager {
       });
 
       console.log(chaptersContent.length + "????");
-      this.bookContent.set(cur, chaptersContent);
+      this.bookContent.set(cur.replace(".txt", ""), chaptersContent);
     }
   }
 

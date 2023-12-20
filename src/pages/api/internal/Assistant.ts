@@ -7,8 +7,6 @@ import { parseGPTResponce } from "./util/GPTParseUtil";
 import { delay } from "./util/TimeUtil";
 
 export default class Assistant {
-  public booleanWorking: boolean = false;
-
   private ai: { id: any } | undefined;
   private thread: any;
   private curRun: any;
@@ -37,7 +35,11 @@ export default class Assistant {
 
   public async initQueue() {
     while (true) {
-      if (this.reqQueue.length == 0) {
+      if (
+        this.reqQueue.length == 0 ||
+        this.ai === undefined ||
+        this.openai === undefined
+      ) {
         await delay(1000);
         continue;
       }
@@ -45,12 +47,16 @@ export default class Assistant {
       const curQ = this.reqQueue.shift();
       if (curQ !== undefined) {
         try {
+          console.log("STARTING!");
           const result = await this.promptGPT(curQ.prompt);
           const responseAr = parseGPTResponce(result);
           const q = responseAr.shift();
 
           if (q !== undefined) {
+            console.log("NOT UNDEFF!");
             this.onResponce(curQ.key, q, responseAr);
+          } else {
+            console.log("UNDEFF!");
           }
         } catch (e) {
           this.onError(curQ.key);
@@ -97,7 +103,7 @@ export default class Assistant {
     if (this.openai !== undefined) {
       let start = Date.now();
 
-      if (!this.booleanWorking || this.ai === undefined) {
+      if (this.ai === undefined) {
         return "---";
       }
 
@@ -110,21 +116,39 @@ export default class Assistant {
         assistant_id: this.ai.id,
       });
 
-      while (Date.now() - start <= 15000) {
+      console.log("Starting new AI request!");
+
+      let lastStatusCheck = Date.now();
+      while (Date.now() - start <= 50000) {
         const status = await this.openai.beta.threads.runs.retrieve(
           this.thread.id,
           this.curRun.id
         );
 
         // The message return system needs to be re-worked to actually work but for now its fine
+
+        /*if (Date.now() - lastStatusCheck >= 1000) {
+          console.log(status.status);
+          lastStatusCheck = Date.now();
+        }*/
+
         if (status.status == "completed") {
           const message = await this.openai.beta.threads.messages.list(
             this.thread.id
           );
-          return message.data[0].content[0].text.value;
+
+          console.log(
+            "Completed AI Request! Took " + (Date.now() - start) + "ms."
+          );
+
+          const gptResponse = message.data[0].content[0].text.value;
+          //console.log(gptResponse);
+
+          return gptResponse;
         }
       }
 
+      console.error("Timed out!");
       throw new AITimeoutError("Timed out!");
       return "---";
     } else {
