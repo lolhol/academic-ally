@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
 
 // e

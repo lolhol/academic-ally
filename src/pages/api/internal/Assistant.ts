@@ -2,35 +2,32 @@ import page from "@/app/page";
 import OpenAI from "openai";
 import AIDoesNotExistError from "./err/AIDoesNotExistError";
 import AITimeoutError from "./err/AITimeoutError";
-import GPTManager from "./GPTManager";
+import type GPTManager from "./GPTManager";
 import GPTPrompt from "./GPTPrompt";
 import { parseGPTResponce } from "./util/GPTParseUtil";
 import { delay } from "./util/TimeUtil";
 
 export default class Assistant {
-  public name: string;
-  public booleanWorking: boolean;
+  public booleanWorking: boolean = false;
 
-  private key: string;
   private ai: { id: any } | undefined;
   private thread: any;
   private curRun: any;
   private openai: OpenAI | undefined;
   private reqQueue: GPTPrompt[] = [];
-  private GPTManager;
 
   public constructor(
-    textbookName: string,
-    gptKey: string,
+    private name: string,
+    private key: string,
+    private onResponce: (
+      token: string,
+      question: string,
+      answers: string[]
+    ) => void,
+    private onError: (token: string) => void,
     initInfo: string,
-    chapter: string,
-    GPTManagerInstance: GPTManager
+    chapter: string
   ) {
-    this.GPTManager = GPTManagerInstance;
-    this.name = textbookName;
-    this.key = gptKey;
-    this.booleanWorking = false;
-
     this.initAI(initInfo, chapter);
     this.initQueue();
   }
@@ -54,10 +51,10 @@ export default class Assistant {
           const q = responseAr.shift();
 
           if (q !== undefined) {
-            this.GPTManager.addResponce(curQ.key, q, responseAr);
+            this.onResponce(curQ.key, q, responseAr);
           }
         } catch (e) {
-          this.GPTManager.addError(curQ.key);
+          this.onError(curQ.key);
         }
       }
     }
@@ -93,6 +90,7 @@ export default class Assistant {
   }
 
   public parseRetText(txt: string): string {
+    //TODO: soon
     return "";
   }
 

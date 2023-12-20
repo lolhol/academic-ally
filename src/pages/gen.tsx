@@ -99,9 +99,9 @@ export default function Gen() {
   const handleTestExec = async (lessonName: string, chapter: string) => {
     console.log("TESTING!");
     const a = JSON.stringify({
-      textbook: lessonName,
-      prompt: "You are a multiple choice test creator.",
-      chapter: chapter,
+      textbook: "The-Book-Thief",
+      prompt: "Make me 5 questions about this.",
+      chapter: 2,
     });
 
     const tokenRes = await fetch("./api/promptGPT", {
@@ -110,6 +110,7 @@ export default function Gen() {
     });
 
     const tokenJson = await tokenRes.json();
+    console.log(tokenJson);
     if (!tokenJson.success) {
       console.error("ERR!");
     } else {

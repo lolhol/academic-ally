@@ -1,19 +1,16 @@
-import { TEXTBOOKS } from "./AcademicAlly";
 import Assistant from "./Assistant";
-import AssistentResponce from "./User/AssistentResponce";
-import AssistentResponceStore from "./User/AssistentResponceStore";
+import type AssistentResponce from "./user/AssistentResponce";
+import AssistentResponceStore from "./user/AssistentResponceStore";
 import * as fs from "fs";
-import TextbookManager from "./textbooks/TextbookManager";
+import type TextbookManager from "./textbooks/TextbookManager";
 
 export default class GPTManager {
   private assistantMap: Map<string, Map<string, Assistant>> = new Map();
   private responceStore: AssistentResponceStore = new AssistentResponceStore();
   private key: string;
-  private textBookManager: TextbookManager;
 
-  constructor() {
+  constructor(private textBookManager: TextbookManager) {
     this.key = fs.readFileSync("./.env", "utf8");
-    this.textBookManager = new TextbookManager(TEXTBOOKS);
     this.createAssistants();
   }
 
@@ -29,8 +26,10 @@ export default class GPTManager {
 
   public createAssistants() {
     try {
-      for (let i = 0; i < TEXTBOOKS.length; i++) {
-        let textBookName = TEXTBOOKS[i];
+      const textbooks = this.textBookManager.getBookList();
+
+      for (let i = 0; i < textbooks.length; i++) {
+        let textBookName = textbooks[i];
         let curChapterList = this.textBookManager.getBookChapterData(
           textBookName,
           i
@@ -43,9 +42,10 @@ export default class GPTManager {
           let assistant = new Assistant(
             textBookName,
             this.key,
+            (...args) => this.addResponce(...args),
+            (...args) => this.addError(...args),
             curChapterList[j],
-            j.toString(),
-            this
+            j.toString()
           );
 
           // TODO: "multithreading" (l8tr)
@@ -73,6 +73,10 @@ export default class GPTManager {
     chapter: string
   ): boolean {
     this.responceStore.addUserStore(key);
+
+    //console.log(textbook);
+    //console.log(this.assistantMap);
+
     if (
       this.assistantMap.has(textbook) &&
       this.assistantMap.get(textbook)?.has(chapter)

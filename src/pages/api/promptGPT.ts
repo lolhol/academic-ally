@@ -1,24 +1,28 @@
-import { MANAGER, TOKENLEN } from "@/internal/AcademicAlly";
-import { generateToken } from "@/internal/User/TokenUtils";
+import { MANAGER, TOKENLEN } from "@/pages/api/internal/main";
+import { generateToken } from "@/pages/api/internal/user/TokenUtils";
 import * as fs from "fs";
 
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log("!!!");
-  const parsed = JSON.parse(req.body);
-  const token = generateToken(TOKENLEN);
-  const GPTPromptRes = MANAGER.promptGPT(
-    token,
-    parsed.prompt,
-    parsed.textbook,
-    parsed.chapter
-  );
+  if (MANAGER !== null) {
+    const parsed = JSON.parse(req.body);
+    const token = generateToken(TOKENLEN);
+    const GPTPromptRes = MANAGER.promptGPT(
+      token,
+      parsed.prompt,
+      parsed.textbook,
+      parsed.chapter
+    );
 
-  res
-    .status(200)
-    .json({ success: GPTPromptRes, token: GPTPromptRes ? token : "0000" });
+    res
+      .status(200)
+      .json({ success: GPTPromptRes, token: GPTPromptRes ? token : "0001" });
+  } else {
+    console.log(typeof MANAGER);
+    res.status(200).json({ success: false, token: "0000" });
+  }
 }
