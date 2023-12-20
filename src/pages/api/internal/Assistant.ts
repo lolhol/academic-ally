@@ -2,7 +2,6 @@ import page from "@/app/page";
 import OpenAI from "openai";
 import AIDoesNotExistError from "./err/AIDoesNotExistError";
 import AITimeoutError from "./err/AITimeoutError";
-import type GPTManager from "./GPTManager";
 import GPTPrompt from "./GPTPrompt";
 import { parseGPTResponce } from "./util/GPTParseUtil";
 import { delay } from "./util/TimeUtil";
