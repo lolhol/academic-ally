@@ -4,7 +4,7 @@ import css from "../styles/genStyle.module.css";
 import Test from "./test";
 import "bootstrap/dist/css/bootstrap.min.css";
 import type PromptGPTRequest from "@/interfaces/PromptGPTRequest";
-import { delay } from "./api/internal/util/TimeUtil";
+import { delay } from "../internal/util/TimeUtil";
 
 export default function Gen() {
   const [isGenerated, setGen] = useState(false);
@@ -14,6 +14,7 @@ export default function Gen() {
   const [answers, setA] = useState<string[]>([]);
   const [isDone, setIsDone] = useState(false); // Manage isDone as a state
   const [isRan, setIsRan] = useState(false);
+  const [prevToken, setToken] = useState("0000");
 
   const [test, setTest] = useState(false);
 
@@ -101,21 +102,26 @@ export default function Gen() {
   const handleTestExec = async (lessonName: string, chapter: string) => {
     console.log("TESTING!");
 
-    const tokenRes = await fetch("./api/promptGPT", {
+    const tokenRes = await fetch("./api/gpt/promptGPT", {
       method: "POST",
       body: JSON.stringify({
         textbook: "The-Book-Thief",
         prompt:
           "Make me a question and 4 possible answers for this. Make the question and answers separated with --- where --- is on a separate line. Remove the A, B, C, D from the answers and instead separate them with --- as well. Do not put an empty line in between question and answers.",
         chapter: "2",
+        token: prevToken,
       } satisfies PromptGPTRequest),
     });
 
     const tokenJson = await tokenRes.json();
-    console.log(tokenJson);
+    //console.log(tokenJson);
     if (!tokenJson.success) {
       console.error("ERR!");
     } else {
+      if (tokenJson.generating) {
+        console.log("ALREADY GENERATING!");
+      }
+
       const token = tokenJson.token.toString();
 
       const q = JSON.stringify({
@@ -125,7 +131,7 @@ export default function Gen() {
       let curAmtReqd = 0;
 
       while (true) {
-        const tokenRes = await fetch("./api/requestUpdate", {
+        const tokenRes = await fetch("./api/gpt/requestUpdate", {
           method: "POST",
           body: q,
         });
@@ -133,13 +139,12 @@ export default function Gen() {
         curAmtReqd++;
 
         const json = await tokenRes.json();
+        //console.log(json);
 
         if (!json.responded && curAmtReqd < 20) {
           await delay(1000);
           continue;
         }
-
-        console.log(json);
 
         if (json.error || curAmtReqd >= 20) {
           console.error("Error when generating!");
@@ -151,6 +156,8 @@ export default function Gen() {
         console.log("Answers: " + json.answers);
         break;
       }
+
+      setToken(token);
     }
   };
 

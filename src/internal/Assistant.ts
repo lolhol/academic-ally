@@ -5,6 +5,7 @@ import AITimeoutError from "./err/AITimeoutError";
 import GPTPrompt from "./GPTPrompt";
 import { parseGPTResponce } from "./util/GPTParseUtil";
 import { delay } from "./util/TimeUtil";
+import chalk from "chalk";
 
 export default class Assistant {
   private ai: { id: any } | undefined;
@@ -21,7 +22,7 @@ export default class Assistant {
       question: string,
       answers: string[]
     ) => void,
-    private onError: (token: string) => void,
+    private onError: (e: unknown, token: string) => void,
     initInfo: string,
     chapter: string
   ) {
@@ -47,19 +48,15 @@ export default class Assistant {
       const curQ = this.reqQueue.shift();
       if (curQ !== undefined) {
         try {
-          console.log("STARTING!");
           const result = await this.promptGPT(curQ.prompt);
           const responseAr = parseGPTResponce(result);
           const q = responseAr.shift();
 
           if (q !== undefined) {
-            console.log("NOT UNDEFF!");
             this.onResponce(curQ.key, q, responseAr);
-          } else {
-            console.log("UNDEFF!");
           }
         } catch (e) {
-          this.onError(curQ.key);
+          this.onError(e, curQ.key);
         }
       }
     }
@@ -141,8 +138,7 @@ export default class Assistant {
             "Completed AI Request! Took " + (Date.now() - start) + "ms."
           );
 
-          const gptResponse = message.data[0].content[0].text.value;
-          //console.log(gptResponse);
+          const gptResponse = (message.data[0].content[0] as any).text.value;
 
           return gptResponse;
         }

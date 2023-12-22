@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import * as fs from "fs";
 
 export default class TextbookManager {
@@ -6,6 +7,7 @@ export default class TextbookManager {
   constructor(private books: string[]) {
     this.bookContent = new Map();
     this.init();
+    console.log(chalk.blue("Done init TextbookManager!"));
   }
 
   public getTextBooks() {}
@@ -36,7 +38,6 @@ export default class TextbookManager {
         }
       });
 
-      console.log(chaptersContent.length + "????");
       this.bookContent.set(cur.replace(".txt", ""), chaptersContent);
     }
   }

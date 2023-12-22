@@ -1,11 +1,11 @@
-import { MANAGER } from "@/pages/api/internal/main";
 import * as fs from "fs";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
 import { stringify } from "querystring";
+import { MANAGER } from "../core";
 
-export default async function handler(
+export default async function requestUpdate(
   req: NextApiRequest,
   res: NextApiResponse
 ) {

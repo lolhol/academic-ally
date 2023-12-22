@@ -1,15 +1,23 @@
 import { Crushed } from "next/font/google";
 import AssistentResponce from "./AssistentResponce";
+import chalk from "chalk";
 
 export default class AssistentResponceStore {
-  public data: Map<string, AssistentResponce> = new Map();
+  public data: Map<string, AssistentResponce>;
+  private currentlyGenerating: Set<string> = new Set();
   public timeSinceLastClean = Date.now();
+
+  public constructor() {
+    this.data = new Map();
+    console.log(chalk.blue("Done init UserStore!"));
+  }
 
   public addUserStore(token: string) {
     if (Date.now() - this.timeSinceLastClean >= 120000) {
       this.cleanUp();
     }
 
+    this.currentlyGenerating.add(token);
     this.data.set(token, new AssistentResponce("WAITING!", [], Date.now()));
   }
 
@@ -19,6 +27,7 @@ export default class AssistentResponceStore {
 
   public remove(token: string) {
     this.data.delete(token);
+    this.currentlyGenerating.delete(token);
   }
 
   public isUser(token: string) {
@@ -27,6 +36,10 @@ export default class AssistentResponceStore {
 
   public set(token: string, question: string, answers: string[]) {
     this.data.set(token, new AssistentResponce(question, answers, Date.now()));
+  }
+
+  public isGeneratingFor(token: string): boolean {
+    return this.currentlyGenerating.has(token);
   }
 
   private cleanUp() {
@@ -46,7 +59,6 @@ export default class AssistentResponceStore {
 
   public isResponded(token: string): string | AssistentResponce {
     if (this.isUser(token)) {
-      console.log("RETURNED REAL VAL!");
       if (
         this.data.get(token)?.question.includes("CHATGPT_ERROR_ERROR_CHATGPT")
       ) {

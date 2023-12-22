@@ -4,15 +4,23 @@ import AssistentResponceStore from "./user/AssistentResponceStore";
 import * as fs from "fs";
 import type TextbookManager from "./textbooks/TextbookManager";
 import GetUpdateResponce from "./user/GetUpdateResponce";
+import { threadId } from "worker_threads";
+import chalk from "chalk";
 
 export default class GPTManager {
   private assistantMap: Map<string, Map<string, Assistant>> = new Map();
-  private responceStore: AssistentResponceStore = new AssistentResponceStore();
+  private responceStore: AssistentResponceStore;
   private key: string;
 
   constructor(private textBookManager: TextbookManager) {
     this.key = fs.readFileSync("./.env", "utf8");
+    this.responceStore = new AssistentResponceStore();
     this.createAssistants();
+  }
+
+  private stackTrace() {
+    let err = new Error();
+    return err.stack;
   }
 
   private indexTextbooks() {}
@@ -21,8 +29,10 @@ export default class GPTManager {
     this.responceStore.set(token, question, answers);
   }
 
-  public addError(token: string) {
+  public addError(e: unknown, token: string) {
     this.responceStore.addErr(token);
+    console.error("Chat GPT error!");
+    console.error(e);
   }
 
   public createAssistants() {
@@ -38,7 +48,7 @@ export default class GPTManager {
 
         if (textbookChapterNumb === undefined) continue;
 
-        console.log(textbookChapterNumb);
+        //console.log(textbookChapterNumb);
 
         let curChapters: Map<string, Assistant> = new Map();
         for (let j = 0; j < textbookChapterNumb; j++) {
@@ -79,10 +89,9 @@ export default class GPTManager {
         this.assistantMap.set(textBookName, curChapters);
       }
 
-      console.log("Done init!");
+      console.log(chalk.bold(chalk.blue("Done init GPTManager!")));
     } catch (e) {
-      console.log(e);
-      console.log("INVALID KEY!");
+      console.log(chalk.red("INVALID KEY!"));
     }
   }
 
@@ -94,11 +103,6 @@ export default class GPTManager {
   ): boolean {
     this.responceStore.remove(key);
     this.responceStore.addUserStore(key);
-
-    console.log(JSON.stringify(chapter), [
-      ...this.assistantMap.get(textbook)!.keys(),
-    ]);
-    console.log(this.assistantMap.get(textbook)?.has(chapter));
 
     if (
       this.assistantMap.has(textbook) &&
@@ -114,8 +118,7 @@ export default class GPTManager {
 
   public getUpdate(token: string): GetUpdateResponce {
     let res = this.responceStore.isResponded(token);
-    //console.log(this.responceStore.data);
-    //console.log(res);
+
     if (res == "false") {
       const updateResFalse = new GetUpdateResponce(false, false, null);
       return updateResFalse;
@@ -131,5 +134,9 @@ export default class GPTManager {
     }
 
     return new GetUpdateResponce(true, true, null);
+  }
+
+  public isGeneratingFor(token: string): boolean {
+    return this.responceStore.isGeneratingFor(token);
   }
 }
