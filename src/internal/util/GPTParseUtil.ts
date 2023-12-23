@@ -1,3 +1,5 @@
+// TODO: may need to fix up some stuff here
+
 export function parseGPTResponce(res: string): string[] {
   let res_split = res.split("\n");
 
@@ -48,5 +50,3 @@ function isAlphabetLetter(character: string): boolean {
   const alphabetPattern: RegExp = /^[a-zA-Z]$/;
   return alphabetPattern.test(character);
 }
-
-// TODO: have to re-work @this
