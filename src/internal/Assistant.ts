@@ -5,7 +5,6 @@ import AITimeoutError from "./err/AITimeoutError";
 import GPTPrompt from "./GPTPrompt";
 import { parseGPTResponce } from "./util/GPTParseUtil";
 import { delay } from "./util/TimeUtil";
-import chalk from "chalk";
 
 export default class Assistant {
   private ai: { id: any } | undefined;
@@ -139,6 +138,9 @@ export default class Assistant {
           );
 
           const gptResponse = (message.data[0].content[0] as any).text.value;
+
+          console.log(" ");
+          console.log(gptResponse);
 
           return gptResponse;
         }

@@ -107,7 +107,7 @@ export default function Gen() {
       body: JSON.stringify({
         textbook: "The-Book-Thief",
         prompt:
-          "Make me a question and 4 possible answers for this. Make the question and answers separated with --- where --- is on a separate line. Remove the A, B, C, D from the answers and instead separate them with --- as well. Do not put an empty line in between question and answers.",
+          "Make me a question and 4 answers based on the text above. Make sure that the first answer is the right answer to the question and that the answers are not duplicated. Answer this with this format - QUESTION, BLANK LINE, CORRECT ANSWER, BLANK LINE, ANSWER, BLANK LINE, ANSWER, BLANK LINE, ANSWER.",
         chapter: "2",
         token: prevToken,
       } satisfies PromptGPTRequest),
