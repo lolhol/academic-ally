@@ -6,27 +6,30 @@ import type TextbookManager from "./textbooks/TextbookManager";
 import GetUpdateResponce from "./user/GetUpdateResponce";
 import { threadId } from "worker_threads";
 import chalk from "chalk";
+import QAStorage from "./storage/QAStorage";
 
 export default class GPTManager {
   private assistantMap: Map<string, Map<string, Assistant>> = new Map();
+  private qaStorage: QAStorage;
   private responceStore: AssistentResponceStore;
   private key: string;
 
   constructor(private textBookManager: TextbookManager) {
     this.key = fs.readFileSync("./.env", "utf8");
     this.responceStore = new AssistentResponceStore();
+    this.qaStorage = new QAStorage();
     this.createAssistants();
   }
 
-  private stackTrace() {
-    let err = new Error();
-    return err.stack;
-  }
-
-  private indexTextbooks() {}
-
-  public addResponce(token: string, question: string, answers: string[]) {
+  public addResponce(
+    token: string,
+    question: string,
+    answers: string[],
+    book: string,
+    chapter: string
+  ) {
     this.responceStore.set(token, question, answers);
+    this.qaStorage.addToFile(question, answers, book, chapter);
   }
 
   public addError(e: unknown, token: string) {

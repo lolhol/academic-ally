@@ -13,13 +13,17 @@ export default class Assistant {
   private openai: OpenAI | undefined;
   private reqQueue: GPTPrompt[] = [];
 
+  private chapter: string;
+
   public constructor(
     private name: string,
     private key: string,
     private onResponce: (
       token: string,
       question: string,
-      answers: string[]
+      answers: string[],
+      book: string,
+      chapter: string
     ) => void,
     private onError: (e: unknown, token: string) => void,
     initInfo: string,
@@ -27,6 +31,8 @@ export default class Assistant {
   ) {
     this.initAI(initInfo, chapter);
     this.initQueue();
+
+    this.chapter = chapter;
   }
 
   public addToQueue(prompt: string, key: string) {
@@ -52,7 +58,7 @@ export default class Assistant {
           const q = responseAr.shift();
 
           if (q !== undefined) {
-            this.onResponce(curQ.key, q, responseAr);
+            this.onResponce(curQ.key, q, responseAr, this.name, this.chapter);
           }
         } catch (e) {
           this.onError(e, curQ.key);
