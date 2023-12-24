@@ -127,6 +127,7 @@ export default class GPTManager {
       return updateResFalse;
     } else if (res == "error") {
       const updateResErr = new GetUpdateResponce(true, true, null);
+      this.responceStore.remove(token);
       return updateResErr;
     }
 

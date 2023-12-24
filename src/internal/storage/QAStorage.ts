@@ -10,7 +10,7 @@ export default class QAStorage {
   ) {
     const filePath = "./public/qadata/" + book + "_" + chapter + ".json";
     if (!fs.existsSync(filePath)) {
-      fs.writeFileSync(filePath, "{'iter': []}", "utf-8");
+      fs.writeFileSync(filePath, '{"iter": []}', "utf-8");
     }
 
     const readData: Buffer = fs.readFileSync(filePath);
