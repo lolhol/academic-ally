@@ -1,5 +1,6 @@
 import * as fs from "fs";
-type UserHistory = Record<string, string[]>;
+
+type UserHistory = { [k in string]?: string[] };
 
 export default class UserAnsweredQAManager {
   private filePath: any = "./public/user/userData.json";
@@ -17,17 +18,11 @@ export default class UserAnsweredQAManager {
   }
 
   public addQuestion(question: string, userKey: string) {
-    let userHistory = this.getUserHistory();
-
-    if (userHistory[userKey] === undefined) {
-      userHistory[userKey] = [question];
-    } else {
-      if (userHistory[userKey].length < this.maxLen) {
-        userHistory[userKey].push(question);
-      } else {
-        userHistory[userKey].unshift(question);
-        userHistory[userKey].pop();
-      }
+    const userHistory = this.getUserHistory();
+    const questions = (userHistory[userKey] ??= []);
+    questions.push(question);
+    if (questions.length > this.maxLen) {
+      questions.shift();
     }
 
     this.write(userHistory);
@@ -39,12 +34,7 @@ export default class UserAnsweredQAManager {
   }
 
   public isContains(userKey: string, question: string): boolean {
-    let userHistory = this.getUserHistory();
-    if (userHistory[userKey]?.includes(question)) {
-      return true;
-    }
-
-    return false;
+    return !!this.getUserHistory()[userKey]?.includes(question);
   }
 
   private write(newDat: UserHistory) {
@@ -52,7 +42,7 @@ export default class UserAnsweredQAManager {
   }
 
   public replaceKey(userKey: string, newKey: string) {
-    let userHistory = this.getUserHistory();
+    const userHistory = this.getUserHistory();
 
     if (userHistory[userKey] !== undefined) {
       const tmp = userHistory[userKey];
@@ -60,5 +50,10 @@ export default class UserAnsweredQAManager {
       userHistory[newKey] = tmp;
       this.write(userHistory);
     }
+  }
+
+  public getAllQuestions(key: string): string {
+    const history = this.getUserHistory();
+    return (history[key] ?? []).join(" ");
   }
 }

@@ -37,8 +37,17 @@ export default class GPTManager {
       this.qaStorage.addToFile(question, answers, book, chapter);
       this.userAnsweredQAManager.addQuestion(question, token);
     } else {
-      this.promptGPT(token, getMultiChoicePrompt(), book, chapter);
+      this.promptGPT(
+        token,
+        getMultiChoicePrompt(this.getAlrAnsweredQuestions(token)),
+        book,
+        chapter
+      );
     }
+  }
+
+  public getAlrAnsweredQuestions(token: string): string {
+    return this.userAnsweredQAManager.getAllQuestions(token);
   }
 
   public addError(e: unknown, token: string) {
@@ -59,8 +68,6 @@ export default class GPTManager {
           this.textBookManager.getTextBookChapters(textBookName);
 
         if (textbookChapterNumb === undefined) continue;
-
-        //console.log(textbookChapterNumb);
 
         let curChapters: Map<string, Assistant> = new Map();
         for (let j = 0; j < textbookChapterNumb; j++) {

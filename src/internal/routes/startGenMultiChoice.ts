@@ -24,16 +24,17 @@ export default async function promptGPT(
   }
 
   const token = generateToken(TOKENLEN);
-  const GPTPromptRes = MANAGER.promptGPT(
-    token,
-    getMultiChoicePrompt(),
-    parsed.textbook,
-    parsed.chapter
-  );
 
   if (prevToken !== "0000") {
     MANAGER.updateTokenUserQAStorage(prevToken, token);
   }
+
+  const GPTPromptRes = MANAGER.promptGPT(
+    token,
+    getMultiChoicePrompt(MANAGER.getAlrAnsweredQuestions(token)),
+    parsed.textbook,
+    parsed.chapter
+  );
 
   res.status(200).json({
     success: GPTPromptRes,
