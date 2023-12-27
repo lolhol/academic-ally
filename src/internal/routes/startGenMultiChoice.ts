@@ -5,6 +5,7 @@ import "./requestUpdate";
 import * as fs from "fs";
 
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getMultiChoicePrompt } from "../prompt/promptMakerUtil";
 
 export default async function promptGPT(
   req: NextApiRequest,
@@ -19,21 +20,24 @@ export default async function promptGPT(
       token: prevToken,
       generating: true,
     });
-
     return;
   }
 
   const token = generateToken(TOKENLEN);
   const GPTPromptRes = MANAGER.promptGPT(
     token,
-    parsed.prompt,
+    getMultiChoicePrompt(),
     parsed.textbook,
     parsed.chapter
   );
 
+  if (prevToken !== "0000") {
+    MANAGER.updateTokenUserQAStorage(prevToken, token);
+  }
+
   res.status(200).json({
     success: GPTPromptRes,
-    token: GPTPromptRes ? token : "0001",
+    token: GPTPromptRes ? token : "0000",
     generating: false,
   });
 }

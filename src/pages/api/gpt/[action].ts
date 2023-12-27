@@ -1,6 +1,6 @@
 import type PromptGPTRequest from "@/interfaces/PromptGPTRequest";
 import type { NextApiRequest, NextApiResponse } from "next";
-import promptGPT from "@/internal/routes/promptGPT";
+import promptGPT from "@/internal/routes/startGenMultiChoice";
 import requestUpdate from "@/internal/routes/requestUpdate";
 
 export default async function handler(
@@ -9,7 +9,7 @@ export default async function handler(
 ) {
   const { action } = req.query;
 
-  if (action === "promptGPT") {
+  if (action === "startGenMultiChoice") {
     await promptGPT(req, res);
   } else if (action === "requestUpdate") {
     await requestUpdate(req, res);

@@ -22,92 +22,13 @@ export default function Gen() {
     setTest(!test);
   };
 
-  const handleExecute = async (lessonName: string, chapter: string) => {
-    console.log(lessonName);
-    console.log(chapter);
-
-    if (isRan) {
-      return;
-    }
-
-    setIsRan(true);
-
-    try {
-      const a = JSON.stringify({
-        textbook: lessonName,
-        instructions: "You are a multiple choice test creator.",
-        prompt:
-          "Provide a challenging question from chapter " +
-          chapter +
-          " of The Book Theif, do not provide any anwers just simply the question. Only provide the raw question with nothing else.",
-      });
-
-      const questionResponse = await fetch("./api/getRes", {
-        method: "POST",
-        body: a,
-      });
-
-      const jsonQuestion = await questionResponse.json();
-      console.log(jsonQuestion.val);
-
-      const b = JSON.stringify({
-        textbook: lessonName,
-        instructions: "You are a multiple choice test creator.",
-        prompt:
-          "There are 4 people providing answers to the following question in the context of a multiple choise quiz:" +
-          jsonQuestion.val +
-          " You are responsible for providing the correct answer to this question. Only provide the raw answer with nothing else.",
-      });
-
-      const correctAnswerResponse = await fetch("./api/getRes", {
-        method: "POST",
-        body: b,
-      });
-
-      let answerchoices: string[] = [];
-      const jsonCorrectAnswer = await correctAnswerResponse.json();
-      answerchoices.push(jsonCorrectAnswer.val);
-
-      console.log(jsonCorrectAnswer.val);
-
-      for (let i = 0; i < 3; i++) {
-        const c = JSON.stringify({
-          textbook: lessonName,
-          instructions: "You are a multiple choice test creator.",
-          prompt:
-            "There are 4 people providing answers to the following question in the context of a multiple choise quiz:" +
-            jsonQuestion.val +
-            " You are responsible for providing one of the incorrect answers to this question. Only provide the raw answer with nothing else. These are the current answers:" +
-            answerchoices,
-        });
-
-        const incorrectAnswerResponse = await fetch("./api/getRes", {
-          method: "POST",
-          body: c,
-        });
-
-        const jsonIncorrectAnswer = await incorrectAnswerResponse.json();
-        answerchoices.push(jsonIncorrectAnswer.val);
-        console.log(jsonIncorrectAnswer.val);
-      }
-
-      setQ(jsonQuestion.val);
-      setA(answerchoices);
-      setIsDone(true); // Set isDone to true when everything is completed
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
   const handleTestExec = async (lessonName: string, chapter: string) => {
     console.log("TESTING!");
 
-    const tokenRes = await fetch("./api/gpt/promptGPT", {
+    const tokenRes = await fetch("./api/gpt/startGenMultiChoice", {
       method: "POST",
       body: JSON.stringify({
         textbook: "The-Book-Thief",
-        prompt:
-          "Make me a question and 4 answers based on the text above. Make sure that the first answer is the right answer to the question and that the answers are not duplicated. Answer this with this format - QUESTION, BLANK LINE, CORRECT ANSWER, BLANK LINE, ANSWER, BLANK LINE, ANSWER, BLANK LINE, ANSWER.",
         chapter: "2",
         token: prevToken,
       } satisfies PromptGPTRequest),
@@ -166,12 +87,6 @@ export default function Gen() {
       handleTestExec("124", "1234");
     }
   }, [test]);
-
-  useEffect(() => {
-    if (isGenerated) {
-      handleExecute(lessonName, chapter);
-    }
-  }, [isGenerated]);
 
   return (
     <main>

@@ -7,11 +7,14 @@ import GetUpdateResponce from "./user/GetUpdateResponce";
 import { threadId } from "worker_threads";
 import chalk from "chalk";
 import QAStorage from "./storage/QAStorage";
+import UserAnsweredQAManager from "./user/UserAnsweredQAManager";
+import { getMultiChoicePrompt } from "./prompt/promptMakerUtil";
 
 export default class GPTManager {
   private assistantMap: Map<string, Map<string, Assistant>> = new Map();
   private qaStorage: QAStorage;
   private responceStore: AssistentResponceStore;
+  private userAnsweredQAManager: UserAnsweredQAManager;
   private key: string;
 
   constructor(private textBookManager: TextbookManager) {
@@ -19,6 +22,7 @@ export default class GPTManager {
     this.responceStore = new AssistentResponceStore();
     this.qaStorage = new QAStorage();
     this.createAssistants();
+    this.userAnsweredQAManager = new UserAnsweredQAManager();
   }
 
   public addResponce(
@@ -28,8 +32,13 @@ export default class GPTManager {
     book: string,
     chapter: string
   ) {
-    this.responceStore.set(token, question, answers);
-    this.qaStorage.addToFile(question, answers, book, chapter);
+    if (!this.userAnsweredQAManager.isContains(token, question)) {
+      this.responceStore.set(token, question, answers);
+      this.qaStorage.addToFile(question, answers, book, chapter);
+      this.userAnsweredQAManager.addQuestion(question, token);
+    } else {
+      this.promptGPT(token, getMultiChoicePrompt(), book, chapter);
+    }
   }
 
   public addError(e: unknown, token: string) {
@@ -142,5 +151,9 @@ export default class GPTManager {
 
   public isGeneratingFor(token: string): boolean {
     return this.responceStore.isGeneratingFor(token);
+  }
+
+  public updateTokenUserQAStorage(oldToken: string, newToken: string) {
+    this.userAnsweredQAManager.replaceKey(oldToken, newToken);
   }
 }
