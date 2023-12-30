@@ -16,7 +16,7 @@ export default class Assistant {
   private chapter: string;
 
   public constructor(
-    private name: string,
+    public name: string,
     private key: string,
     private onResponce: (
       token: string,
@@ -25,6 +25,9 @@ export default class Assistant {
       book: string,
       chapter: string
     ) => void,
+    private retResponseFunction:
+      | ((res: string, id: string) => void)
+      | undefined,
     private onError: (e: unknown, token: string) => void,
     initInfo: string,
     chapter: string
@@ -33,6 +36,12 @@ export default class Assistant {
     this.initQueue();
 
     this.chapter = chapter;
+  }
+
+  public returnResponse(res: string) {
+    if (this.retResponseFunction !== undefined) {
+      this.retResponseFunction(res, this.name);
+    }
   }
 
   public addToQueue(prompt: string, key: string) {
@@ -145,8 +154,7 @@ export default class Assistant {
 
           const gptResponse = (message.data[0].content[0] as any).text.value;
 
-          console.log(" ");
-          console.log(gptResponse);
+          this.returnResponse(gptResponse);
 
           return gptResponse;
         }

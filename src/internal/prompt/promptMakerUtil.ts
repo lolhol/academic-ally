@@ -5,3 +5,10 @@ export function getMultiChoicePrompt(alrAnswered: string): string {
     alrAnswered
   );
 }
+
+export function getCleanerPrompt(questionsToClean: string): string {
+  return (
+    "Out of these questions, list me the ones that have the same meaning and thus need to be removed. In your response, ONLY GIVE ME THESE QUESTIONS IN THE STYLE OF: Question to be removed, LINE SKIP, Question to be removed, LINE SKIP, ... . The questions are: " +
+    questionsToClean
+  );
+}

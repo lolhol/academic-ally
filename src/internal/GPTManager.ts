@@ -34,7 +34,12 @@ export default class GPTManager {
   ) {
     if (!this.userAnsweredQAManager.isContains(token, question)) {
       this.responceStore.set(token, question, answers);
-      this.qaStorage.addToFile(question, answers, book, chapter);
+      this.qaStorage.addToFile(
+        question,
+        answers,
+        book,
+        Number.parseInt(chapter)
+      );
       this.userAnsweredQAManager.addQuestion(question, token);
     } else {
       this.promptGPT(
@@ -82,17 +87,13 @@ export default class GPTManager {
             textBookName,
             this.key,
             (...args) => this.addResponce(...args),
+            undefined,
             (...args) => this.addError(...args),
             curChapterData,
             j.toString()
           );
 
           timesDone++;
-
-          // TODO: "multithreading" (l8tr)
-          /*for (let k = 1; k < 5; k++) {
-            curChapters.set(j.toString() + "_" + k.toString(), assistant);
-          }*/
 
           if (timesDone >= 12) {
             return;
