@@ -50,3 +50,7 @@ function isAlphabetLetter(character: string): boolean {
   const alphabetPattern: RegExp = /^[a-zA-Z]$/;
   return alphabetPattern.test(character);
 }
+
+export function parseAssistentName(name: string): string[] {
+  return name.split("_");
+}

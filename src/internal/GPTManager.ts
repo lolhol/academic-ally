@@ -9,6 +9,7 @@ import chalk from "chalk";
 import QAStorage from "./storage/QAStorage";
 import UserAnsweredQAManager from "./user/UserAnsweredQAManager";
 import { getMultiChoicePrompt } from "./prompt/promptMakerUtil";
+import { parseAssistentName } from "./util/GPTParseUtil";
 
 export default class GPTManager {
   private assistantMap: Map<string, Map<string, Assistant>> = new Map();
@@ -29,24 +30,24 @@ export default class GPTManager {
     token: string,
     question: string,
     answers: string[],
-    book: string,
-    chapter: string
+    bookChapterData: string
   ) {
+    const bookChapter = parseAssistentName(bookChapterData);
     if (!this.userAnsweredQAManager.isContains(token, question)) {
       this.responceStore.set(token, question, answers);
       this.qaStorage.addToFile(
         question,
         answers,
-        book,
-        Number.parseInt(chapter)
+        bookChapter[0],
+        Number.parseInt(bookChapter[1])
       );
       this.userAnsweredQAManager.addQuestion(question, token);
     } else {
       this.promptGPT(
         token,
         getMultiChoicePrompt(this.getAlrAnsweredQuestions(token)),
-        book,
-        chapter
+        bookChapter[0],
+        bookChapter[1]
       );
     }
   }
@@ -64,6 +65,7 @@ export default class GPTManager {
   public createAssistants() {
     try {
       const textbooks = this.textBookManager.getBookList();
+      const cleanerMap: Assistant[] = [];
       let timesDone = 0;
 
       for (let i = 0; i < textbooks.length; i++) {
@@ -75,7 +77,13 @@ export default class GPTManager {
         if (textbookChapterNumb === undefined) continue;
 
         let curChapters: Map<string, Assistant> = new Map();
-        for (let j = 0; j < textbookChapterNumb; j++) {
+        for (let j: number = 0; j < textbookChapterNumb; j++) {
+          const assistentName: string = (
+            textBookName +
+            "_" +
+            j.toString()
+          ).toUpperCase();
+
           let curChapterData = this.textBookManager.getBookChapterData(
             textBookName,
             i
@@ -84,7 +92,7 @@ export default class GPTManager {
           if (curChapterData === undefined) continue;
 
           let assistant = new Assistant(
-            textBookName,
+            assistentName,
             this.key,
             (...args) => this.addResponce(...args),
             undefined,
@@ -92,6 +100,18 @@ export default class GPTManager {
             curChapterData,
             j.toString()
           );
+
+          // TODO: MIGHT NEED TO re-code this! having 1 assistent and 1 cleaner / book is inefficient idk
+          let cleaner = new Assistant(
+            assistentName + "_CLEANER",
+            this.key,
+            (...args) => this.addResponce(...args),
+            (...args) => this.qaStorage.cleanerRes(...args),
+            (...args) => this.addError(...args),
+            curChapterData,
+            j.toString()
+          );
+          cleanerMap.push(cleaner);
 
           timesDone++;
 
@@ -109,10 +129,16 @@ export default class GPTManager {
         this.assistantMap.set(textBookName, curChapters);
       }
 
+      this.qaStorage.initQAStorageCleaners(cleanerMap);
+
       console.log(chalk.bold(chalk.blue("Done init GPTManager!")));
     } catch (e) {
       console.log(chalk.red("INVALID KEY!"));
     }
+  }
+
+  public startCleaning() {
+    this.qaStorage.cleanStarage();
   }
 
   public promptGPT(

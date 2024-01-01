@@ -15,6 +15,8 @@ export default class Assistant {
 
   private chapter: string;
 
+  public isInStandByMode: boolean = false;
+
   public constructor(
     public name: string,
     private key: string,
@@ -22,11 +24,10 @@ export default class Assistant {
       token: string,
       question: string,
       answers: string[],
-      book: string,
-      chapter: string
+      bookChapterData: string
     ) => void,
     private retResponseFunction:
-      | ((res: string, id: string) => void)
+      | ((res: string, id: string, instance: Assistant) => void)
       | undefined,
     private onError: (e: unknown, token: string) => void,
     initInfo: string,
@@ -40,7 +41,7 @@ export default class Assistant {
 
   public returnResponse(res: string) {
     if (this.retResponseFunction !== undefined) {
-      this.retResponseFunction(res, this.name);
+      this.retResponseFunction(res, this.name, this);
     }
   }
 
@@ -50,6 +51,12 @@ export default class Assistant {
 
   public async initQueue() {
     while (true) {
+      // This is used in order to stop the cleaners from taking up performance idk if it will help a lot tho
+      if (this.isInStandByMode) {
+        await delay(15000);
+        continue;
+      }
+
       if (
         this.reqQueue.length == 0 ||
         this.ai === undefined ||
@@ -67,7 +74,7 @@ export default class Assistant {
           const q = responseAr.shift();
 
           if (q !== undefined) {
-            this.onResponce(curQ.key, q, responseAr, this.name, this.chapter);
+            this.onResponce(curQ.key, q, responseAr, this.name);
           }
         } catch (e) {
           this.onError(e, curQ.key);
@@ -103,11 +110,6 @@ export default class Assistant {
       console.log(error);
       //throw new InvalidKeyException("Invalid AI key provided.");
     }
-  }
-
-  public parseRetText(txt: string): string {
-    //TODO: soon
-    return "";
   }
 
   public async promptGPT(prompt: string) {

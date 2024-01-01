@@ -17,8 +17,13 @@ export default function Gen() {
   const [prevToken, setToken] = useState("0000");
 
   const [test, setTest] = useState(false);
+  const [cleanerTest, setCleanerTestState] = useState(false);
 
-  const turnOnOffTest = () => {
+  const turnOnOffTestClean = () => {
+    setCleanerTestState(!cleanerTest);
+  };
+
+  const turnOnOffTestMain = () => {
     setTest(!test);
   };
 
@@ -82,11 +87,30 @@ export default function Gen() {
     }
   };
 
+  const handleCleanerTestExec = async (lessonName: string, chapter: string) => {
+    console.log("TESTING CLEAN!");
+
+    const tokenRes = await fetch("./api/gpt/testCleaners", {
+      method: "POST",
+      body: JSON.stringify({
+        textbook: "The-Book-Thief",
+        chapter: "2",
+        token: prevToken,
+      } satisfies PromptGPTRequest),
+    });
+  };
+
   useEffect(() => {
     if (test) {
       handleTestExec("124", "1234");
+      turnOnOffTestMain();
     }
-  }, [test]);
+
+    if (cleanerTest) {
+      handleCleanerTestExec("124", "1234");
+      turnOnOffTestClean();
+    }
+  }, [test, cleanerTest]);
 
   return (
     <main>
@@ -94,9 +118,19 @@ export default function Gen() {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={turnOnOffTest}
+          onClick={turnOnOffTestClean}
         >
-          Primary
+          TEST CLEAN
+        </button>
+      </div>
+
+      <div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={turnOnOffTestMain}
+        >
+          TEST MAIN
         </button>
       </div>
 
