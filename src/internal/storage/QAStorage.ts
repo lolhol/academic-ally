@@ -104,7 +104,6 @@ export default class QAStorage {
   public cleanStarage() {
     for (let [key, value] of this.cleanerMap.entries()) {
       const assistentNameParsed: string[] = parseAssistentName(value.name);
-      console.log(assistentNameParsed[0] + " | " + assistentNameParsed[1]);
       if (
         this.isExistsDataOn(
           assistentNameParsed[0],
