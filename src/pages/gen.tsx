@@ -113,64 +113,71 @@ export default function Gen() {
   }, [test, cleanerTest]);
 
   return (
-    <main>
-      <div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={turnOnOffTestClean}
-        >
-          TEST CLEAN
-        </button>
-      </div>
-
-      <div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={turnOnOffTestMain}
-        >
-          TEST MAIN
-        </button>
-      </div>
-
-      {!isGenerated && (
-        <div>
-          <DropdownMenu
-            propsClass={(buttonName: string) => {
-              setLessonName(buttonName);
-            }}
-            propsLesson={(buttonName: string) => {
-              setChapter(buttonName);
-            }}
-          />
-          <div className={css.genButtonDiv}>
-            <button className={css.genButton} onClick={() => setGen(true)}>
-              GENERATE
+    <>
+      <head>
+        <link href="/dist/output.css" rel="stylesheet" />
+      </head>
+      <body>
+        <main>
+          <div>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={turnOnOffTestClean}
+            >
+              TEST CLEAN
             </button>
           </div>
-        </div>
-      )}
 
-      {!isDone && isGenerated && (
-        <div className={css.h1Div}>
-          <h1 className={css.h1Loading}>Generating...</h1>
-        </div>
-      )}
+          <div>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={turnOnOffTestMain}
+            >
+              TEST MAIN
+            </button>
+          </div>
 
-      {isDone && (
-        <div>
-          <Test
-            p={question}
-            a={answers}
-            callback={() => {
-              setGen(false);
-              setIsDone(false);
-              setIsRan(false);
-            }}
-          />
-        </div>
-      )}
-    </main>
+          {!isGenerated && (
+            <div>
+              <DropdownMenu
+                propsClass={(buttonName: string) => {
+                  setLessonName(buttonName);
+                }}
+                propsLesson={(buttonName: string) => {
+                  setChapter(buttonName);
+                }}
+              />
+              <div className={css.genButtonDiv}>
+                <button className={css.genButton} onClick={() => setGen(true)}>
+                  GENERATE
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!isDone && isGenerated && (
+            <div className={css.h1Div}>
+              <h1 className={css.h1Loading}>Generating...</h1>
+            </div>
+          )}
+
+          {isDone && (
+            <div>
+              <Test
+                p={question}
+                a={answers}
+                callback={() => {
+                  setGen(false);
+                  setIsDone(false);
+                  setIsRan(false);
+                }}
+              />
+            </div>
+          )}
+        </main>
+      </body>
+    </>
   );
 }
