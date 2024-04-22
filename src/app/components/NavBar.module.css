@@ -1,0 +1,28 @@
+.nav-bar-css {
+  display: flex;
+  align-items: center; /* Vertically center items */
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  border: 1px solid black;
+}
+
+
+.nav-bar-image {
+  margin-left: 1%;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.nav-bar-text {
+  margin-left: 1%;
+  vertical-align: middle;
+  font-size: x-large;
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sign-in-button-top-div {
+  margin-left: auto;
+  margin-right: 1%;
+}

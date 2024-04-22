@@ -1,6 +1,8 @@
 .dropdown-main {
-  display: inline-block;
   position: relative;
+  user-select: none;
+  align-items: center;
+  text-align: center;
 }
 
 .dropdown-main-button {
@@ -15,6 +17,7 @@
   border-style: solid;
   border-color: white;
   border: none;
+  cursor: pointer;
 }
 
 .dropdown-main-button-border-open {
@@ -23,6 +26,17 @@
   text-align: center;
   width: 100%;
   border-width: 1px;
+  cursor: pointer;
+}
+
+.button-icon-closed {
+  animation: rotateDown 0.5s;
+  transform: rotate(180deg);
+}
+
+.button-icon-open {
+  animation: rotateUp 0.5s;
+  transform: rotate(0deg);
 }
 
 .dropdown-option-button {
@@ -45,6 +59,10 @@
   background-color: #f0f0f0;
 }
 
+.inner-div {
+  width: 100%;
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -62,5 +80,23 @@
   100% {
     transform: scaleX(1);
     transform-origin: 50% 0;
+  }
+}
+
+@keyframes rotateDown {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes rotateUp {
+  0% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }

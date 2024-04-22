@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import css from "./css/DropDownMenuCss.module.css";
+import css from "./DropDownMenu.module.css";
 
 interface Option {
   onClick: (buttonName: string) => void;
@@ -10,11 +10,13 @@ interface Option {
 
 interface OptionsCollection {
   options: Option[];
+  defaultText: string;
 }
 
 export default function DropDownMenu(options: OptionsCollection) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isHoveringOverDiv, setHoveringOverDiv] = useState(false);
+  const [buttonText, setButtonText] = useState(options.defaultText);
 
   const handleOptionClick = (option: string) => {
     // TODO: this will need to be re-coded
@@ -42,16 +44,8 @@ export default function DropDownMenu(options: OptionsCollection) {
         className={css["dropdown-main-button"]}
         onMouseEnter={() => setDropdownOpen(true)}
       >
-        Select an option
+        {buttonText}
       </button>
-
-      <div
-        className={
-          !isDropdownOpen
-            ? css["dropdown-main-button-border-default"]
-            : css["dropdown-main-button-border-open"]
-        }
-      ></div>
 
       {isDropdownOpen && (
         <div
@@ -60,16 +54,31 @@ export default function DropDownMenu(options: OptionsCollection) {
           }}
           className={css["dropdown-options-div"]}
         >
+          <div
+            className={
+              !isDropdownOpen
+                ? css["dropdown-main-button-border-default"]
+                : css["dropdown-main-button-border-open"]
+            }
+          ></div>
+
           {options.options.map((option) => (
-            <div>
-              <button
-                key={option.text}
-                className={css["dropdown-option-button"]}
-                onClick={() => handleOptionClick(option.text)}
-              >
-                {option.text}
-              </button>
-            </div>
+            <>
+              {option.text != buttonText && (
+                <div className={css["inner-div"]}>
+                  <button
+                    className={css["dropdown-option-button"]}
+                    onClick={() => {
+                      handleOptionClick(option.text);
+                      setButtonText(option.text);
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    {option.text}
+                  </button>
+                </div>
+              )}
+            </>
           ))}
         </div>
       )}
