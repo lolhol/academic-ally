@@ -4,10 +4,14 @@ import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <Link href="/gen">
-        <div className={styles.center}>
-          <Image
+    <main>
+      <div className={styles.center}>123</div>
+    </main>
+  );
+}
+
+/*
+<Image
             className={styles.logo}
             src="/next.svg"
             alt="Next.js Logo"
@@ -15,8 +19,4 @@ export default function Home() {
             height={37}
             priority
           />
-        </div>
-      </Link>
-    </main>
-  );
-}
+          */

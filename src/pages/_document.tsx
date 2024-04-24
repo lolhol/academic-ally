@@ -13,3 +13,5 @@ export default function Document() {
     </Html>
   );
 }
+
+// TODO: this whole folder has to be migrated

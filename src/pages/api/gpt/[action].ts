@@ -20,3 +20,5 @@ export default async function handler(
     res.status(404).json({ success: false });
   }
 }
+
+// TODO: this whole folder has to be migrated

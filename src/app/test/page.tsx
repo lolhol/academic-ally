@@ -2,6 +2,7 @@
 
 import DropDownMenu from "../components/DropDownMenu";
 import css from "./page.module.css";
+import "../globals.css";
 
 export default function Tests() {
   const handleOptionClick = (option: string) => {

@@ -14,3 +14,5 @@ export default function App({
     </SessionProvider>
   );
 }
+
+// TODO: this whole folder has to be migrated
