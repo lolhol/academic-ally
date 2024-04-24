@@ -3,6 +3,9 @@
 import DropDownMenu from "../components/DropDownMenu";
 import css from "./page.module.css";
 import "../globals.css";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Icon, IconButton } from "@mui/material";
+import { DeleteForever } from "@mui/icons-material";
 
 export default function Tests() {
   const handleOptionClick = (option: string) => {
@@ -19,7 +22,8 @@ export default function Tests() {
 
   return (
     <main className={css["main-div"]}>
-      <div className={css["width-div"]}></div>
+      <DeleteIcon />
+      <DeleteForever />
     </main>
   );
 }
