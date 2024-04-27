@@ -1,5 +1,20 @@
-.center {
-  justify-content: center;
-  text-align: center;
-  font-size: xx-large;
+.animate-slideInFromTop {
+  animation: slideInFromTop 1.5s cubic-bezier(0.25, 0.41, 0.335, 0.99);
+}
+
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  10% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

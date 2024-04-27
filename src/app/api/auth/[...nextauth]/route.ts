@@ -6,12 +6,15 @@ const handler = NextAuth({
   secret: "11111",
   providers: [
     CredentialsProvider({
-      name: "IGN",
+      name: "Email",
       credentials: {
         username: {
-          label: "In Game Name",
+          label: "Email",
           type: "text",
-          placeholder: "6LittleTimmy9",
+          placeholder: "someone@gmail.com",
+        },
+        password: {
+          label: "Password",
         },
       },
 

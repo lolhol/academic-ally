@@ -1,7 +1,9 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import cx from "classnames";
 import { SessionProvider } from "next-auth/react";
-import "./globals.css";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={cx(inter.className, "bg-black")}>
+        <main>{children}</main>
+      </body>
     </html>
   );
 }
