@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import cx from "classnames";
 import { SessionProvider } from "next-auth/react";
 import { Suspense } from "react";
+import NavBar from "./components/NavBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +20,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cx(inter.className, "bg-black")}>
-        <main>{children}</main>
+      <body className={cx(inter.className, "bg-main-page")}>
+        <main>
+          <div className="mr-24 ml-24 mt-3">
+            <NavBar />
+          </div>
+          {children}
+        </main>
       </body>
     </html>
   );

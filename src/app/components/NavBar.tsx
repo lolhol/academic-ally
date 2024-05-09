@@ -1,20 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import css from "./NavBar.module.css";
-import { useSession, signIn, signOut } from "next-auth/react";
-import SignInSignOutButton from "./SignInSignOutButton";
-
 export default function NavBar() {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const { data: session } = useSession();
-
   return (
-    <div className={css["nav-bar-css"]}>
-      <img className={css["nav-bar-image"]} src="/logoNoText.jpeg" />
-      <a className={css["nav-bar-text"]}>Academic Ally</a>
-      <div className={css["sign-in-button-top-div"]}>
-        <SignInSignOutButton />
+    <div className={"w-full flex justify-between items-center"}>
+      <div className="cursor-pointer">
+        <a className="text-4xl text-black-pearl font-extrabold font-inter">
+          Cogniture
+        </a>
+      </div>
+      <div className="flex justify-evenly flex-grow font-roboto text-black text-2xl font-bold">
+        <a className="cursor-pointer">Product</a>
+        <a className="cursor-pointer">Features</a>
+        <a className="cursor-pointer">Benefits</a>
+      </div>
+      <div className="w-36 h-14">
+        <button className="w-36 h-14 bg-yellow-button border-2 border-black rounded-lg font-roboto font-black text-2xl shadow-lg shadow-black shadow-solid">
+          Sign In
+        </button>
       </div>
     </div>
   );
